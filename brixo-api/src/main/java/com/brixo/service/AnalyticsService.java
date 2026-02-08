@@ -48,13 +48,21 @@ public class AnalyticsService {
         String ipAnon = anonymizeIp(remoteIp);
 
         AnalyticsEvent event = AnalyticsEvent.builder()
+                .visitorId(request.visitorId())
+                .sessionId(request.sessionId())
+                .eventType(request.eventType() != null ? request.eventType() : "pageview")
+                .url(request.url())
                 .path(sanitizePath(request.path()))
                 .referrer(request.referrer())
+                .title(request.title())
+                .screen(request.screen())
+                .viewport(request.viewport())
                 .deviceType(request.deviceType())
+                .language(request.language())
                 .browser(request.browser())
-                .screenWidth(request.screenWidth())
+                .platform(request.platform())
                 .ipAnon(ipAnon)
-                .extraJson(request.extra())
+                .extraJson(serializeExtra(request.extra()))
                 .build();
 
         eventRepository.save(event);
@@ -73,7 +81,7 @@ public class AnalyticsService {
         stats.put("uniqueVisitors", eventRepository.findDistinctVisitorsSince(since));
         stats.put("deviceBreakdown", eventRepository.countByDeviceTypeSince(since));
         stats.put("browserBreakdown", eventRepository.countByBrowserSince(since));
-        stats.put("topPages", eventRepository.topPagesSince(since, 10));
+        stats.put("topPages", eventRepository.topPagesSince(since));
         stats.put("periodDays", days);
 
         return stats;
@@ -106,5 +114,18 @@ public class AnalyticsService {
         String clean = path.split("[?#]")[0];
         // Limitar longitud
         return clean.length() > 255 ? clean.substring(0, 255) : clean;
+    }
+
+    /**
+     * Serializa el mapa extra a JSON string.
+     */
+    private String serializeExtra(Map<String, Object> extra) {
+        if (extra == null || extra.isEmpty()) return null;
+        try {
+            return mapper.writeValueAsString(extra);
+        } catch (JsonProcessingException e) {
+            log.warn("Error serializando extra analytics data: {}", e.getMessage());
+            return null;
+        }
     }
 }
