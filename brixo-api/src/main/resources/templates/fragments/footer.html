@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-1">&copy; 2026 Brixo — Conectando necesidades con soluciones locales.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a th:href="@{/sobre-nosotros}" class="text-white-50">Sobre Nosotros</a>
+            <a th:href="@{/como-funciona}" class="text-white-50">Cómo Funciona</a>
+            <a th:href="@{/ayuda}" class="text-white-50">Ayuda</a>
+            <a th:href="@{/politica-cookies}" class="text-white-50">Cookies</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

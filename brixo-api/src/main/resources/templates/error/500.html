@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+<div class="container py-5 text-center">
+    <h1 class="display-1 text-danger">500</h1>
+    <p class="lead" th:text="${message}">Error interno del servidor.</p>
+    <p class="text-muted" th:text="${detail}" th:if="${detail}"></p>
+    <a th:href="@{/}" class="btn btn-primary">Volver al inicio</a>
+</div>
+</body>
+</html>
