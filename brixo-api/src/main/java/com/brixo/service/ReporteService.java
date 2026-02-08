@@ -52,7 +52,7 @@ public class ReporteService {
 
             // Cabeceras
             String[] headers = {
-                    "ID", "Nombre", "Apellido", "Correo", "Teléfono",
+                    "ID", "Nombre", "Correo", "Teléfono",
                     "Ciudad", "Verificado", "Fecha Registro"
             };
             Row headerRow = sheet.createRow(0);
@@ -66,14 +66,13 @@ public class ReporteService {
             int rowIdx = 1;
             for (Contratista c : contratistas) {
                 Row row = sheet.createRow(rowIdx++);
-                row.createCell(0).setCellValue(c.getIdContratista());
+                row.createCell(0).setCellValue(c.getId());
                 row.createCell(1).setCellValue(c.getNombre());
-                row.createCell(2).setCellValue(c.getApellido());
-                row.createCell(3).setCellValue(c.getCorreo());
-                row.createCell(4).setCellValue(c.getTelefono() != null ? c.getTelefono() : "");
-                row.createCell(5).setCellValue(c.getCiudad() != null ? c.getCiudad() : "");
-                row.createCell(6).setCellValue(c.isVerificado() ? "Sí" : "No");
-                row.createCell(7).setCellValue(
+                row.createCell(2).setCellValue(c.getCorreo());
+                row.createCell(3).setCellValue(c.getTelefono() != null ? c.getTelefono() : "");
+                row.createCell(4).setCellValue(c.getCiudad() != null ? c.getCiudad() : "");
+                row.createCell(5).setCellValue(Boolean.TRUE.equals(c.getVerificado()) ? "Sí" : "No");
+                row.createCell(6).setCellValue(
                         c.getCreadoEn() != null ? c.getCreadoEn().format(DATE_FMT) : ""
                 );
             }
@@ -114,15 +113,15 @@ public class ReporteService {
             int rowIdx = 1;
             for (Solicitud s : solicitudes) {
                 Row row = sheet.createRow(rowIdx++);
-                row.createCell(0).setCellValue(s.getIdSolicitud());
+                row.createCell(0).setCellValue(s.getId());
                 row.createCell(1).setCellValue(s.getTitulo() != null ? s.getTitulo() : "");
                 row.createCell(2).setCellValue(truncate(s.getDescripcion(), 100));
                 row.createCell(3).setCellValue(s.getEstado().name());
                 row.createCell(4).setCellValue(
-                        s.getCliente() != null ? s.getCliente().getIdCliente() : 0
+                        s.getCliente() != null ? s.getCliente().getId() : 0
                 );
                 row.createCell(5).setCellValue(
-                        s.getContratista() != null ? s.getContratista().getIdContratista() : 0
+                        s.getContratista() != null ? s.getContratista().getId() : 0
                 );
                 row.createCell(6).setCellValue(
                         s.getCreadoEn() != null ? s.getCreadoEn().format(DATE_FMT) : ""
