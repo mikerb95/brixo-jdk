@@ -3,6 +3,8 @@ package com.brixo.service;
 import com.brixo.dto.AnalyticsEventRequest;
 import com.brixo.entity.AnalyticsEvent;
 import com.brixo.repository.AnalyticsEventRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,9 +31,11 @@ public class AnalyticsService {
     private static final Logger log = LoggerFactory.getLogger(AnalyticsService.class);
 
     private final AnalyticsEventRepository eventRepository;
+    private final ObjectMapper mapper;
 
-    public AnalyticsService(AnalyticsEventRepository eventRepository) {
+    public AnalyticsService(AnalyticsEventRepository eventRepository, ObjectMapper mapper) {
         this.eventRepository = eventRepository;
+        this.mapper = mapper;
     }
 
     /**
