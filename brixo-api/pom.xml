@@ -26,8 +26,8 @@
 
     <dependencies>
         <!-- ═══════════════════════════════════════════
-             WEB + TEMPLATE ENGINE
-             ═══════════════════════════════════════════ -->
+        WEB + TEMPLATE ENGINE
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -38,8 +38,8 @@
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             DATA (JPA + MySQL + Flyway)
-             ═══════════════════════════════════════════ -->
+        DATA (JPA + MySQL + Flyway)
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -59,8 +59,8 @@
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             SECURITY
-             ═══════════════════════════════════════════ -->
+        SECURITY
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -71,40 +71,40 @@
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             SESSION (DB-backed)
-             ═══════════════════════════════════════════ -->
+        SESSION (DB-backed)
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-jdbc</artifactId>
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             VALIDATION
-             ═══════════════════════════════════════════ -->
+        VALIDATION
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             EMAIL
-             ═══════════════════════════════════════════ -->
+        EMAIL
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             HTTP CLIENT (LLM API calls)
-             ═══════════════════════════════════════════ -->
+        HTTP CLIENT (LLM API calls)
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             AWS S3 (profile photo uploads)
-             ═══════════════════════════════════════════ -->
+        AWS S3 (profile photo uploads)
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
@@ -112,8 +112,8 @@
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             EXCEL REPORTS
-             ═══════════════════════════════════════════ -->
+        EXCEL REPORTS
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -121,16 +121,16 @@
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             JSON (Jackson is included, but explicit for extras)
-             ═══════════════════════════════════════════ -->
+        JSON (Jackson is included, but explicit for extras)
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             DEV TOOLS
-             ═══════════════════════════════════════════ -->
+        DEV TOOLS
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -144,8 +144,8 @@
         </dependency>
 
         <!-- ═══════════════════════════════════════════
-             TESTING
-             ═══════════════════════════════════════════ -->
+        TESTING
+        ═══════════════════════════════════════════ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

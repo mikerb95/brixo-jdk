@@ -48,13 +48,13 @@ spring:
     jdbc:
       initialize-schema: always
       table-name: SPRING_SESSION
-    timeout: 7200  # 2 hours (matches original CI4 config)
+    timeout: 7200 # 2 hours (matches original CI4 config)
 
   # ── Thymeleaf ──
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
-    cache: false  # disable during dev; enable in production
+    cache: false # disable during dev; enable in production
     encoding: UTF-8
 
   # ── Email ──
