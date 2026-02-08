@@ -1,0 +1,103 @@
+## ──────────────────────────────────────────────
+## Brixo API — Spring Boot 3.3 / Java 21
+## ──────────────────────────────────────────────
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: brixo-api
+
+  # ── Virtual Threads (Java 21) ──
+  threads:
+    virtual:
+      enabled: true
+
+  # ── DataSource ──
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:brixo}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Bogota
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 20000
+
+  # ── JPA / Hibernate ──
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    open-in-view: false
+
+  # ── Flyway migrations ──
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # ── Spring Session (JDBC) ──
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+    timeout: 7200  # 2 hours (matches original CI4 config)
+
+  # ── Thymeleaf ──
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false  # disable during dev; enable in production
+    encoding: UTF-8
+
+  # ── Email ──
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+    default-encoding: UTF-8
+
+  # ── File uploads ──
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+  # ── Jackson ──
+  jackson:
+    time-zone: America/Bogota
+    date-format: yyyy-MM-dd HH:mm:ss
+
+# ── AWS S3 ──
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY_ID:}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:}
+    region: ${AWS_REGION:us-east-1}
+    bucket: ${AWS_S3_BUCKET:brixo-images}
+
+# ── LLM Service ──
+llm:
+  provider: ${LLM_PROVIDER:groq}
+  api-key: ${LLM_API_KEY:}
+  model: ${LLM_MODEL:}
+
+# ── Logging ──
+logging:
+  level:
+    root: INFO
+    com.brixo: DEBUG
+    org.hibernate.SQL: WARN
+  file:
+    name: logs/brixo.log
