@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Historias de Éxito - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="py-5 text-center" style="background:var(--neutral-100);">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">Historias de éxito</h1>
+            <p class="lead text-muted">Conoce cómo Brixo ha transformado la vida de profesionales y clientes.</p>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:900px;">
+
+        <!-- Story 1 -->
+        <div class="card border-0 shadow-sm rounded-4 mb-5 overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-4" style="background:#e9ecef;min-height:250px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-hammer fa-4x text-muted"></i>
+                </div>
+                <div class="col-md-8 p-4">
+                    <span class="badge bg-primary bg-opacity-10 text-primary mb-2">Profesional</span>
+                    <h4 class="fw-bold">Carlos M. — Carpintero</h4>
+                    <p class="text-muted">"Desde que me uní a Brixo, mis clientes aumentaron un 300%. La plataforma me permite mostrar mi portafolio de manera profesional y recibir solicitudes directas. Antes dependía solo del boca a boca."</p>
+                    <div class="d-flex align-items-center gap-1 text-warning">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <span class="text-muted ms-2 small">4.9 — 47 reseñas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story 2 -->
+        <div class="card border-0 shadow-sm rounded-4 mb-5 overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-4" style="background:#e9ecef;min-height:250px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-home fa-4x text-muted"></i>
+                </div>
+                <div class="col-md-8 p-4">
+                    <span class="badge bg-success bg-opacity-10 text-success mb-2">Cliente</span>
+                    <h4 class="fw-bold">Ana R. — Bogotá</h4>
+                    <p class="text-muted">"Necesitaba remodelar mi cocina y no sabía por dónde empezar. En Brixo encontré a un profesional verificado en menos de 10 minutos. El cotizador con IA me ayudó a entender el presupuesto antes de contactar."</p>
+                    <div class="d-flex align-items-center gap-1 text-warning">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        <span class="text-muted ms-2 small">Proyecto completado en 5 días</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+</body>
+</html>
