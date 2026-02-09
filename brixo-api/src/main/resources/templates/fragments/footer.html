@@ -1,14 +1,88 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-<footer th:fragment="footer" class="bg-dark text-white py-4 mt-5">
-    <div class="container text-center">
-        <p class="mb-1">&copy; 2026 Brixo — Conectando necesidades con soluciones locales.</p>
-        <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a th:href="@{/sobre-nosotros}" class="text-white-50">Sobre Nosotros</a>
-            <a th:href="@{/como-funciona}" class="text-white-50">Cómo Funciona</a>
-            <a th:href="@{/ayuda}" class="text-white-50">Ayuda</a>
-            <a th:href="@{/politica-cookies}" class="text-white-50">Cookies</a>
+<footer th:fragment="footer" class="site-footer mt-auto">
+    <div class="container" style="max-width:1200px;">
+        <div class="row g-5">
+            <!-- Brand & About -->
+            <div class="col-lg-4 col-md-6">
+                <h4 class="fw-bold mb-3" style="font-size:1.3rem;letter-spacing:-0.02em;">Brixo</h4>
+                <p style="font-size:0.9rem;line-height:1.7;opacity:0.7;max-width:320px;">
+                    Conectando hogares con los mejores profesionales.
+                    Calidad, confianza y seguridad en cada servicio.
+                </p>
+                <div class="d-flex gap-3 mt-3">
+                    <a href="https://github.com/mikerb95" target="_blank" class="hover-text-white"
+                       style="opacity:0.5;" title="GitHub">
+                        <i class="fab fa-github" style="font-size:1.2rem;color:#fff"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6">
+                <h4 class="fw-bold mb-3" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;opacity:0.5;">Explorar</h4>
+                <ul class="list-unstyled" style="font-size:0.9rem;">
+                    <li class="mb-2"><a th:href="@{/}">Inicio</a></li>
+                    <li class="mb-2"><a th:href="@{/mapa}">Mapa</a></li>
+                    <li class="mb-2"><a th:href="@{/especialidades}">Especialidades</a></li>
+                    <li class="mb-2"><a th:href="@{/panel}">Mi Panel</a></li>
+                </ul>
+            </div>
+
+            <!-- Info -->
+            <div class="col-lg-2 col-md-6">
+                <h4 class="fw-bold mb-3" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;opacity:0.5;">Info</h4>
+                <ul class="list-unstyled" style="font-size:0.9rem;">
+                    <li class="mb-2"><a th:href="@{/sobre-nosotros}">Sobre Nosotros</a></li>
+                    <li class="mb-2"><a th:href="@{/como-funciona}">Cómo funciona</a></li>
+                    <li class="mb-2"><a th:href="@{/seguridad}">Seguridad</a></li>
+                    <li class="mb-2"><a th:href="@{/ayuda}">Ayuda</a></li>
+                </ul>
+            </div>
+
+            <!-- Equipo -->
+            <div class="col-lg-4 col-md-6">
+                <h4 class="fw-bold mb-3" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;opacity:0.5;">Equipo</h4>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="https://github.com/mikerb95" target="_blank"
+                       class="btn btn-sm rounded-pill"
+                       style="border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:0.8rem;">
+                        <i class="fab fa-github me-1"></i> mikerb95
+                    </a>
+                    <a href="https://github.com/Jerson7molina" target="_blank"
+                       class="btn btn-sm rounded-pill"
+                       style="border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:0.8rem;">
+                        <i class="fab fa-github me-1"></i> Jerson7molina
+                    </a>
+                    <a href="https://github.com/papidani1" target="_blank"
+                       class="btn btn-sm rounded-pill"
+                       style="border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:0.8rem;">
+                        <i class="fab fa-github me-1"></i> papidani1
+                    </a>
+                    <a href="https://github.com/DavidPino20" target="_blank"
+                       class="btn btn-sm rounded-pill"
+                       style="border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:0.8rem;">
+                        <i class="fab fa-github me-1"></i> DavidPino20
+                    </a>
+                    <a href="https://github.com/edwinmor24" target="_blank"
+                       class="btn btn-sm rounded-pill"
+                       style="border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:0.8rem;">
+                        <i class="fab fa-github me-1"></i> edwinmor24
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border-color:rgba(255,255,255,0.1);margin:2.5rem 0 1.5rem;">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center pb-4" style="font-size:0.8rem;opacity:0.5;">
+            <span>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> Brixo. Todos los derechos reservados.</span>
+            <div class="d-flex gap-3">
+                <a th:href="@{/seguridad}" style="color:inherit;">Privacidad</a>
+                <a th:href="@{/politica-cookies}" style="color:inherit;">Cookies</a>
+                <a th:href="@{/ayuda}" style="color:inherit;">Términos</a>
+            </div>
         </div>
     </div>
 </footer>

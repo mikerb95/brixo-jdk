@@ -2,37 +2,117 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">
-            <strong>Brixo</strong>
+<!--
+  Brixo Navbar v3 — Glassmorphism · Hybrid positioning
+  Modes: bn--solid (default), bn--overlay (home/map), bn--map (map page)
+  The CSS class is set by the controller via model attribute "navMode"
+  (defaults to "solid" if not set).
+-->
+<nav th:fragment="navbar"
+     class="bn"
+     th:classappend="${navMode == 'overlay'} ? ' bn--overlay' : (${navMode == 'map'} ? ' bn--overlay bn--map' : ' bn--solid')"
+     id="brixoNav" role="navigation" aria-label="Navegación principal">
+
+    <div class="bn__inner">
+
+        <!-- ── Brand ── -->
+        <a class="bn__brand" th:href="@{/}" aria-label="Brixo inicio">
+            <span class="bn__brand-text">Brixo</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/mapa}">Mapa</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/especialidades}">Especialidades</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/panel}">Mi Panel</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" th:href="@{/login}">Iniciar Sesión</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/logout}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+
+        <!-- ── Links centro ── -->
+        <ul class="bn__menu" id="bnMenu">
+            <li><a th:href="@{/especialidades}" class="bn__link"
+                   th:classappend="${#strings.startsWith(#request.requestURI, '/especialidades')} ? ' bn__link--active'">Especialidades</a></li>
+            <li><a th:href="@{/mapa}" class="bn__link"
+                   th:classappend="${#strings.startsWith(#request.requestURI, '/map')} ? ' bn__link--active'">Mapa</a></li>
+            <li><a th:href="@{/cotizador}" class="bn__link"
+                   th:classappend="${#strings.startsWith(#request.requestURI, '/cotizador')} ? ' bn__link--active'">
+                <i class="fas fa-calculator me-1"></i>Cotizador</a></li>
+        </ul>
+
+        <!-- ── Acciones derecha ── -->
+        <div class="bn__actions">
+
+            <!-- Logged-in user -->
+            <div sec:authorize="isAuthenticated()" class="bn__user" id="bnUser">
+                <button class="bn__user-toggle" id="bnUserToggle" aria-expanded="false" aria-haspopup="true">
+                    <!-- Avatar or placeholder -->
+                    <th:block th:if="${user != null and user.fotoPerfil != null and !user.fotoPerfil.isBlank()}">
+                        <img th:src="${#strings.startsWith(user.fotoPerfil, 'http') ? user.fotoPerfil : '/images/profiles/' + user.fotoPerfil}"
+                             alt="" class="bn__avatar" width="32" height="32">
+                    </th:block>
+                    <th:block th:if="${user == null or user.fotoPerfil == null or user.fotoPerfil.isBlank()}">
+                        <span class="bn__avatar bn__avatar--placeholder"><i class="fas fa-user"></i></span>
+                    </th:block>
+                    <span class="bn__user-name" th:text="${user != null ? user.nombre : 'Mi Cuenta'}">Mi Cuenta</span>
+                    <i class="fas fa-chevron-down bn__chevron"></i>
+                </button>
+
+                <div class="bn__dropdown" id="bnDropdown" role="menu">
+                    <div class="bn__dropdown-header">
+                        <span th:text="${user != null ? user.correo : ''}"></span>
+                    </div>
+                    <a th:href="@{/panel}"         class="bn__dropdown-item" role="menuitem"><i class="fas fa-th-large"></i>    Mi Panel</a>
+                    <a th:href="@{/mensajes}"      class="bn__dropdown-item" role="menuitem"><i class="fas fa-comments"></i>    Mensajes</a>
+                    <a th:href="@{/perfil/editar}" class="bn__dropdown-item" role="menuitem"><i class="fas fa-user-edit"></i>   Editar Perfil</a>
+                    <div sec:authorize="hasRole('ADMIN')">
+                        <div class="bn__dropdown-divider"></div>
+                        <a th:href="@{/admin}" class="bn__dropdown-item" role="menuitem"><i class="fas fa-cog"></i> Admin</a>
+                    </div>
+                    <div class="bn__dropdown-divider"></div>
+                    <form th:action="@{/logout}" method="post" class="bn__dropdown-form">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="bn__dropdown-item bn__dropdown-item--danger" role="menuitem">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </button>
                     </form>
-                </li>
+                </div>
+            </div>
+
+            <!-- Guest -->
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="bn__link">Registrarse</a>
+                <a th:href="@{/login}" class="bn__btn">Ingresar</a>
+            </div>
+        </div>
+
+        <!-- ── Hamburger mobile ── -->
+        <button class="bn__burger" id="bnBurger" aria-label="Abrir menú" aria-expanded="false" aria-controls="bnMobile">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <!-- ── Mobile drawer ── -->
+    <div class="bn__mobile" id="bnMobile" aria-hidden="true">
+        <ul class="bn__mobile-links">
+            <li><a th:href="@{/especialidades}">Especialidades</a></li>
+            <li><a th:href="@{/mapa}">Mapa</a></li>
+            <li><a th:href="@{/cotizador}"><i class="fas fa-calculator me-1"></i>Cotizador</a></li>
+        </ul>
+        <div class="bn__mobile-divider"></div>
+
+        <!-- Mobile: Logged-in -->
+        <div sec:authorize="isAuthenticated()">
+            <div class="bn__mobile-user">
+                <span class="bn__mobile-label" th:text="${user != null ? user.nombre : 'Mi Cuenta'}">Mi Cuenta</span>
+            </div>
+            <ul class="bn__mobile-links">
+                <li><a th:href="@{/panel}"><i class="fas fa-th-large"></i> Mi Panel</a></li>
+                <li><a th:href="@{/mensajes}"><i class="fas fa-comments"></i> Mensajes</a></li>
+                <li><a th:href="@{/perfil/editar}"><i class="fas fa-user-edit"></i> Editar Perfil</a></li>
             </ul>
+            <div class="bn__mobile-divider"></div>
+            <form th:action="@{/logout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="bn__mobile-logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+            </form>
+        </div>
+
+        <!-- Mobile: Guest -->
+        <div sec:authorize="!isAuthenticated()" class="bn__mobile-actions">
+            <a th:href="@{/login}" class="bn__btn bn__btn--block">Ingresar</a>
+            <a th:href="@{/login}" class="bn__link">Registrarse</a>
         </div>
     </div>
 </nav>
