@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Iniciar sesión</title>
+</head>
+<body>
+<main layout:fragment="content" class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="card-title mb-4 fw-bold">Iniciar sesión</h3>
+
+                    <!-- Flash messages -->
+                    <div th:if="${loginError}" class="alert alert-danger d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span th:text="${loginError}">Error</span>
+                    </div>
+                    <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span>Correo o contraseña incorrectos.</span>
+                    </div>
+                    <div th:if="${registerError}" class="alert alert-warning d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span th:text="${registerError}">Error registro</span>
+                    </div>
+
+                    <!-- Login Form (processed by Spring Security) -->
+                    <form method="post" th:action="@{/login}">
+                        <div class="mb-3">
+                            <label for="correo" class="form-label">Correo electrónico</label>
+                            <input id="correo" name="correo" type="email" class="form-control form-control-lg" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contrasena" class="form-label">Contraseña</label>
+                            <input id="contrasena" name="contrasena" type="password" class="form-control form-control-lg" required>
+                            <div class="text-end mt-2">
+                                <a th:href="@{/password/forgot}" class="text-muted text-decoration-none small">
+                                    <i class="fas fa-key me-1"></i>¿Olvidaste tu contraseña?
+                                </a>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-lg w-100 rounded-pill fw-bold" type="submit">
+                            <i class="fas fa-sign-in-alt me-2"></i>Entrar
+                        </button>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <!-- Registration toggle -->
+                    <p class="text-center text-muted mb-3">¿No tienes cuenta?</p>
+                    <button class="btn btn-outline-secondary w-100 rounded-pill" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#registerForm">
+                        <i class="fas fa-user-plus me-2"></i>Crear cuenta
+                    </button>
+
+                    <!-- Register Form (collapsed) -->
+                    <div class="collapse mt-4" id="registerForm">
+                        <form method="post" th:action="@{/register}" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre completo</label>
+                                <input name="nombre" type="text" class="form-control" required
+                                       th:value="${registerOld?.nombre}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Correo electrónico</label>
+                                <input name="correo" type="email" class="form-control" required
+                                       th:value="${registerOld?.correo}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input name="telefono" type="tel" class="form-control"
+                                       th:value="${registerOld?.telefono}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de cuenta</label>
+                                <select name="rol" class="form-select" required>
+                                    <option value="cliente">Cliente — Busco profesionales</option>
+                                    <option value="contratista">Contratista — Ofrezco servicios</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ciudad</label>
+                                <input name="ciudad" type="text" class="form-control" placeholder="Ej: Bogotá"
+                                       th:value="${registerOld?.ciudad}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contraseña</label>
+                                <input name="contrasena" type="password" class="form-control" required minlength="8">
+                                <small class="text-muted">Mín. 8 caracteres, mayúsculas, minúsculas, números y símbolos</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirmar contraseña</label>
+                                <input name="contrasenaConfirm" type="password" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Foto de perfil (opcional)</label>
+                                <input name="fotoPerfil" type="file" class="form-control" accept="image/*">
+                            </div>
+                            <button class="btn btn-success w-100 rounded-pill fw-bold" type="submit">
+                                <i class="fas fa-check me-2"></i>Registrarse
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
