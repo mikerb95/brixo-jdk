@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Mensajes - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:900px;">
+        <h1 class="h2 fw-bold mb-4"><i class="fas fa-envelope me-2"></i>Mis Conversaciones</h1>
+
+        <div th:if="${#lists.isEmpty(conversaciones)}" class="text-center py-5">
+            <i class="fas fa-comments fa-4x text-muted mb-3"></i>
+            <h3 class="fw-bold">Sin conversaciones</h3>
+            <p class="text-muted">Cuando envíes o recibas un mensaje, aparecerá aquí.</p>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(conversaciones)}" class="list-group list-group-flush">
+            <a th:each="c : ${conversaciones}"
+               th:href="@{/mensajes/chat/{otroId}/{otroRol}(otroId=${c.otroId}, otroRol=${c.otroRol})}"
+               class="list-group-item list-group-item-action p-4 border-0 shadow-sm rounded-4 mb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
+                         style="width:50px;height:50px;">
+                        <i class="fas fa-user text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="fw-bold mb-0" th:text="${c.nombre}">Nombre</h6>
+                            <small class="text-muted" th:text="${c.ultimaFecha}">Fecha</small>
+                        </div>
+                        <p class="text-muted small mb-0 text-truncate" style="max-width:500px;" th:text="${c.ultimoMensaje}">Último mensaje...</p>
+                    </div>
+                    <span th:if="${c.sinLeer > 0}" class="badge bg-primary rounded-pill" th:text="${c.sinLeer}">0</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

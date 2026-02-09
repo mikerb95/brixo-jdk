@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Panel de Contratista - Brixo</title></head>
+<body>
+<main layout:fragment="content" class="flex-grow-1">
+    <div class="container my-5" style="max-width:1200px;">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header d-flex justify-content-between align-items-center shadow-sm p-4 rounded-4 mb-4"
+             style="background:linear-gradient(135deg,#1a1a1a,#333);color:#fff;">
+            <div class="d-flex align-items-center gap-3">
+                <img th:if="${user.fotoPerfil != null}" th:src="${user.fotoPerfil}"
+                     alt="Perfil" class="rounded-circle shadow-sm border border-2 border-white"
+                     style="width:64px;height:64px;object-fit:cover;">
+                <div th:unless="${user.fotoPerfil != null}"
+                     class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-sm border border-2 border-white"
+                     style="width:64px;height:64px;">
+                    <i class="fas fa-user fa-2x text-secondary"></i>
+                </div>
+                <div>
+                    <h1 class="h2 fw-bold mb-1">Hola, <span th:text="${user.nombre}">Contratista</span> 🛠️</h1>
+                    <p class="mb-0 opacity-75">Bienvenido a tu panel de profesional</p>
+                </div>
+            </div>
+            <div class="d-none d-md-block">
+                <a th:href="@{/mensajes}" class="btn btn-light text-primary fw-bold rounded-pill px-4 shadow-sm me-2"><i class="fas fa-envelope me-2"></i>Mensajes</a>
+                <a th:href="@{/perfil/editar}" class="btn btn-light text-primary fw-bold rounded-pill px-4 shadow-sm me-2"><i class="fas fa-user-edit me-2"></i>Editar Perfil</a>
+                <a th:href="@{/}" class="btn btn-light text-primary fw-bold rounded-pill px-4 shadow-sm"><i class="fas fa-home me-2"></i>Ir al Inicio</a>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:#E3F2FD;color:#1565C0;"><i class="fas fa-search-dollar"></i></div>
+                    <div><h3 class="h5 fw-bold mb-0" th:text="${#lists.size(solicitudesDisponibles)}">0</h3><span class="text-muted small">Oportunidades Nuevas</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:#E8F5E9;color:#2E7D32;"><i class="fas fa-handshake"></i></div>
+                    <div><h3 class="h5 fw-bold mb-0" th:text="${#lists.size(contracts)}">0</h3><span class="text-muted small">Contratos Activos</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:#FFF3E0;color:#E65100;"><i class="fas fa-star"></i></div>
+                    <div><h3 class="h5 fw-bold mb-0" th:text="${#lists.size(reviews)}">0</h3><span class="text-muted small">Reseñas Recibidas</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <!-- Oportunidades -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                        <h2 class="h5 fw-bold mb-0">Oportunidades Recientes</h2>
+                        <a th:href="@{/tablon-tareas}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">Ver todas <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(solicitudesDisponibles)}" class="text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h5 class="fw-bold">No hay solicitudes nuevas</h5>
+                            <p class="text-muted">Vuelve más tarde para ver nuevas oportunidades de trabajo.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(solicitudesDisponibles)}" class="list-group list-group-flush">
+                            <a th:each="s : ${solicitudesDisponibles}" th:href="@{/tablon-tareas}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-primary" th:text="${s.titulo}">Título</h6>
+                                        <div class="small text-muted mb-1">
+                                            <i class="fas fa-map-marker-alt me-1"></i> <span th:text="${s.ubicacion}">Ubicación</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill mb-1">
+                                            $<span th:text="${#numbers.formatInteger(s.presupuesto, 1, 'POINT')}">0</span>
+                                        </span>
+                                        <div class="small text-muted" th:text="${#temporals.format(s.creadoEn, 'dd MMM')}">Fecha</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contratos Activos -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0"><h2 class="h5 fw-bold mb-0">Contratos Activos</h2></div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(contracts)}" class="text-center py-5">
+                            <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
+                            <h5 class="fw-bold">No tienes contratos activos</h5>
+                            <p class="text-muted">Postúlate a trabajos para conseguir contratos.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(contracts)}" class="list-group list-group-flush">
+                            <div th:each="c : ${contracts}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="fw-bold mb-1" th:text="${c.detalle}">Detalle</h6>
+                                        <span class="badge bg-dark bg-opacity-10 text-dark" th:text="${c.estado}">Estado</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="small text-muted">Inicio: <span th:text="${#temporals.format(c.fechaInicio, 'dd MMM')}">Fecha</span></div>
+                                        <div class="fw-bold mt-1">$<span th:text="${#numbers.formatInteger(c.costoTotal, 1, 'POINT')}">0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar: Reviews -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0"><h2 class="h5 fw-bold mb-0">Reseñas Recibidas</h2></div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(reviews)}" class="text-center py-4">
+                            <i class="far fa-comment-dots fa-2x text-muted mb-2"></i>
+                            <p class="text-muted small mb-0">Aún no has recibido reseñas.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(reviews)}" class="list-group list-group-flush">
+                            <div th:each="r : ${reviews}" class="list-group-item">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div class="text-warning small">
+                                        <i th:each="i : ${#numbers.sequence(1, r.calificacion)}" class="fas fa-star"></i>
+                                    </div>
+                                    <small class="text-muted" th:text="${#temporals.format(r.fechaResena, 'dd MMM')}">Fecha</small>
+                                </div>
+                                <p class="mb-1 small" th:text="${'&quot;' + r.comentario + '&quot;'}">Comentario</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

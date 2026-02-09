@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Tablón de Tareas - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:1000px;">
+        <h1 class="h2 fw-bold mb-4">Tablón de Solicitudes Abiertas</h1>
+        <p class="text-muted mb-4">Solicitudes publicadas por clientes que buscan profesionales como tú.</p>
+
+        <div th:if="${#lists.isEmpty(solicitudes)}" class="text-center py-5">
+            <i class="fas fa-search fa-4x text-muted mb-3"></i>
+            <h3 class="fw-bold">No hay solicitudes disponibles</h3>
+            <p class="text-muted">Vuelve más tarde para ver nuevas oportunidades.</p>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(solicitudes)}" class="row g-3">
+            <div th:each="s : ${solicitudes}" class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold mb-1 text-primary" th:text="${s.titulo}">Título</h5>
+                                <p class="text-muted mb-2" th:text="${s.descripcion}">Descripción</p>
+                                <div class="d-flex gap-3 small text-secondary">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i> <span th:text="${s.ubicacion ?: 'Sin ubicación'}">Ubicación</span></span>
+                                    <span><i class="far fa-calendar me-1"></i> <span th:text="${#temporals.format(s.creadoEn, 'dd MMM, yyyy')}">Fecha</span></span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="badge bg-success bg-opacity-10 text-success rounded-pill mb-1">
+                                    $<span th:text="${#numbers.formatInteger(s.presupuesto ?: 0, 1, 'POINT')}">0</span>
+                                </div>
+                                <div><a th:href="@{/mensajes}" class="btn btn-primary btn-sm rounded-pill mt-2"><i class="fas fa-paper-plane me-1"></i>Contactar</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

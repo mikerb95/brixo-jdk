@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${pro.nombre + ' - Perfil Profesional | Brixo'}">Perfil Profesional</title>
+    <style>
+        .profile-header-bg { background-color:#f8f9fa; padding:3rem 0; }
+        .profile-img-large { width:150px; height:150px; object-fit:cover; border:4px solid #fff; box-shadow:0 2px 10px rgba(0,0,0,.1); }
+        .rating-star { color:#ffc107; }
+        .service-card { transition:transform .2s; }
+        .service-card:hover { transform:translateY(-2px); box-shadow:0 .5rem 1rem rgba(0,0,0,.15)!important; }
+        .sticky-sidebar { position:sticky; top:90px; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Profile Header -->
+    <div class="profile-header-bg border-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-auto text-center text-md-start">
+                    <img th:src="${pro.imagen}" th:alt="${pro.nombre}" class="rounded-circle profile-img-large">
+                </div>
+                <div class="col-md text-center text-md-start mt-3 mt-md-0">
+                    <h1 class="fw-bold mb-1">
+                        <span th:text="${pro.nombre}">Nombre</span>
+                        <i th:if="${pro.verificado}" class="fas fa-check-circle text-primary fs-4" title="Identidad Verificada"></i>
+                    </h1>
+                    <h4 class="text-muted mb-2" th:text="${pro.profesion ?: 'Profesional'}">Profesión</h4>
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mb-2">
+                        <div class="d-flex align-items-center">
+                            <span class="fw-bold fs-5 me-1" th:text="${pro.rating}">0</span>
+                            <div class="text-warning me-1">
+                                <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                    <i th:classappend="${i <= pro.rating} ? 'fas fa-star' : 'far fa-star'"></i>
+                                </th:block>
+                            </div>
+                            <span class="text-muted text-decoration-underline">(<span th:text="${pro.reviewsCount}">0</span> reseñas)</span>
+                        </div>
+                        <div class="text-muted" th:if="${pro.ubicacion}">
+                            <i class="fas fa-map-marker-alt me-1"></i> <span th:text="${pro.ubicacion}">Ciudad</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <section class="mb-5">
+                    <h3 class="fw-bold mb-3">Sobre mí</h3>
+                    <p class="lead fs-6 text-secondary" th:text="${pro.descripcion ?: 'Sin descripción disponible.'}">Descripción</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-3 me-3"><i class="fas fa-briefcase text-primary fs-4"></i></div>
+                                <div><div class="fw-bold">Experiencia</div><div class="text-muted" th:text="${pro.experiencia ?: 'Profesional'}">Experiencia</div></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-3 me-3"><i class="fas fa-user-shield text-primary fs-4"></i></div>
+                                <div><div class="fw-bold">Garantía</div><div class="text-muted">Trabajo asegurado y garantizado</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr class="my-5">
+                <!-- Services -->
+                <section class="mb-5">
+                    <h3 class="fw-bold mb-4">Servicios Ofrecidos</h3>
+                    <div class="row g-3">
+                        <div th:if="${#lists.isEmpty(servicios)}" class="col-12">
+                            <p class="text-muted"><i class="fas fa-info-circle me-2"></i>Este profesional aún no ha registrado servicios.</p>
+                        </div>
+                        <div th:each="servicio : ${servicios}" class="col-md-6">
+                            <div class="card h-100 border shadow-sm service-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title fw-bold mb-0" th:text="${servicio.nombre}">Servicio</h5>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary">Desde $<span th:text="${#numbers.formatInteger(servicio.precioEstimado ?: 0, 1, 'POINT')}">0</span></span>
+                                    </div>
+                                    <p class="card-text text-muted small" th:text="${servicio.descripcion ?: 'Sin descripción'}">Desc</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr class="my-5">
+                <!-- Reviews -->
+                <section class="mb-5">
+                    <h3 class="fw-bold mb-4">Reseñas de clientes</h3>
+                    <div th:if="${#lists.isEmpty(resenas)}">
+                        <p class="text-muted"><i class="fas fa-info-circle me-2"></i>Este profesional aún no tiene reseñas.</p>
+                    </div>
+                    <div th:each="resena : ${resenas}" class="card border-0 mb-4">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center fw-bold text-secondary"
+                                     style="width:50px;height:50px;" th:text="${#strings.substring(resena.autor ?: 'U', 0, 1).toUpperCase()}">U</div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="fw-bold mb-0" th:text="${resena.autor ?: 'Usuario'}">Autor</h6>
+                                    <small class="text-muted" th:text="${resena.fecha}">Fecha</small>
+                                </div>
+                                <div class="text-warning mb-2 rating-star">
+                                    <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                        <i th:classappend="${i <= (resena.calificacion ?: 0)} ? 'fas fa-star' : 'far fa-star'"></i>
+                                    </th:block>
+                                </div>
+                                <p class="text-secondary mb-0" th:text="${resena.comentario}">Comentario</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sticky-sidebar">
+                    <div class="card shadow-sm border-0 rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold mb-4">Contactar a <span th:text="${#strings.arraySplit(pro.nombre, ' ')[0]}">Nombre</span></h4>
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/solicitud/nueva}" class="btn btn-primary btn-lg fw-bold">Solicitar Cotización</a>
+                                <a th:href="@{/mensajes}" class="btn btn-outline-dark btn-lg fw-bold">Enviar Mensaje</a>
+                            </div>
+                            <div class="text-center mt-3"><small class="text-muted"><i class="fas fa-bolt text-warning"></i> Responde en menos de 1 hora</small></div>
+                        </div>
+                        <div class="card-footer bg-light p-3 text-center border-top-0 rounded-bottom-4">
+                            <small class="text-muted">Contratación segura a través de Brixo</small>
+                        </div>
+                    </div>
+
+                    <div class="card border shadow-sm rounded-4 mb-4">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3">Certificaciones</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li th:if="${#lists.isEmpty(certificaciones)}" class="text-muted"><i class="fas fa-info-circle me-2"></i>Sin certificaciones registradas</li>
+                                <li th:each="cert : ${certificaciones}" class="mb-2 d-flex align-items-start">
+                                    <i class="fas fa-certificate text-success mt-1 me-2"></i>
+                                    <div>
+                                        <span class="fw-semibold" th:text="${cert.nombre}">Certificación</span>
+                                        <small th:if="${cert.entidadEmisora}" class="text-muted d-block" th:text="${cert.entidadEmisora}">Entidad</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card border shadow-sm rounded-4">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3">Disponibilidad</h5>
+                            <div class="d-flex justify-content-between mb-2"><span>Lunes - Viernes</span><span class="fw-bold">8:00 - 18:00</span></div>
+                            <div class="d-flex justify-content-between"><span>Sábados</span><span class="fw-bold">9:00 - 14:00</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

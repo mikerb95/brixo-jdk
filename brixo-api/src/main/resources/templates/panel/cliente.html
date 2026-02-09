@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Panel de Usuario - Brixo</title></head>
+<body>
+<main layout:fragment="content" class="flex-grow-1">
+    <div class="container my-5" style="max-width:1200px;">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header d-flex justify-content-between align-items-center shadow-sm p-4 rounded-4 mb-4"
+             style="background:linear-gradient(135deg,var(--primary-color,#009fd9),var(--primary-hover,#0088b9));color:#fff;">
+            <div class="d-flex align-items-center gap-3">
+                <img th:if="${user.fotoPerfil != null}" th:src="${user.fotoPerfil}"
+                     alt="Perfil" class="rounded-circle shadow-sm border border-2 border-white"
+                     style="width:64px;height:64px;object-fit:cover;">
+                <div th:unless="${user.fotoPerfil != null}"
+                     class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-sm border border-2 border-white"
+                     style="width:64px;height:64px;">
+                    <i class="fas fa-user fa-2x text-secondary"></i>
+                </div>
+                <div>
+                    <h1 class="h2 fw-bold mb-1">Hola, <span th:text="${user.nombre}">Usuario</span> 👋</h1>
+                    <p class="mb-0 opacity-75">Bienvenido a tu panel de control</p>
+                </div>
+            </div>
+            <div class="d-none d-md-block">
+                <a th:href="@{/mensajes}" class="btn btn-light text-primary fw-bold rounded-pill px-4 shadow-sm me-2"><i class="fas fa-envelope me-2"></i>Mensajes</a>
+                <a th:href="@{/perfil/editar}" class="btn btn-light text-primary fw-bold rounded-pill px-4 shadow-sm me-2"><i class="fas fa-user-edit me-2"></i>Editar Perfil</a>
+                <a th:href="@{/}" class="btn btn-light text-primary fw-bold rounded-pill px-4 shadow-sm"><i class="fas fa-home me-2"></i>Ir al Inicio</a>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:#E3F2FD;color:#1565C0;"><i class="fas fa-clipboard-list"></i></div>
+                    <div><h3 class="h5 fw-bold mb-0" th:text="${#lists.size(solicitudes)}">0</h3><span class="text-muted small">Solicitudes Activas</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:#E8F5E9;color:#2E7D32;"><i class="fas fa-file-signature"></i></div>
+                    <div><h3 class="h5 fw-bold mb-0" th:text="${#lists.size(contracts)}">0</h3><span class="text-muted small">Contratos Firmados</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;background:#FFF3E0;color:#E65100;"><i class="fas fa-star"></i></div>
+                    <div><h3 class="h5 fw-bold mb-0" th:text="${#lists.size(reviews)}">0</h3><span class="text-muted small">Reseñas Dadas</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <!-- Solicitudes -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                        <h2 class="h5 fw-bold mb-0">Mis Solicitudes</h2>
+                        <a th:href="@{/solicitud/nueva}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold"><i class="fas fa-plus me-1"></i> Nueva</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(solicitudes)}" class="text-center py-5">
+                            <i class="fas fa-clipboard fa-3x text-muted mb-3"></i>
+                            <h5 class="fw-bold">Sin solicitudes activas</h5>
+                            <p class="text-muted">Publica tu primera solicitud para encontrar profesionales.</p>
+                            <a th:href="@{/solicitud/nueva}" class="btn btn-outline-primary rounded-pill">Crear Solicitud</a>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(solicitudes)}" class="list-group list-group-flush">
+                            <div th:each="s : ${solicitudes}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="me-3">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <h6 class="fw-bold mb-0" th:text="${s.titulo}">Título</h6>
+                                            <span class="badge bg-info bg-opacity-10 text-info" th:text="${s.estado}">Estado</span>
+                                        </div>
+                                        <p class="text-muted small mb-2 text-truncate" style="max-width:400px;" th:text="${s.descripcion}">Descripción</p>
+                                        <div class="d-flex align-items-center gap-3 text-secondary small">
+                                            <span><i class="far fa-calendar me-1"></i> <span th:text="${#temporals.format(s.creadoEn, 'dd MMM, yyyy')}">Fecha</span></span>
+                                            <span class="fw-semibold text-dark"><i class="fas fa-tag me-1 text-muted"></i> $<span th:text="${#numbers.formatInteger(s.presupuesto, 1, 'POINT')}">0</span></span>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v text-muted"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                            <li><a class="dropdown-item" th:href="@{/solicitud/editar/{id}(id=${s.id})}"><i class="fas fa-edit me-2 text-primary"></i>Editar</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" th:href="@{/solicitud/eliminar/{id}(id=${s.id})}" onclick="return confirm('¿Estás seguro?');"><i class="fas fa-trash-alt me-2"></i>Eliminar</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contratos -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0"><h2 class="h5 fw-bold mb-0">Mis Contratos</h2></div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(contracts)}" class="text-center py-5">
+                            <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
+                            <h5 class="fw-bold">No tienes contratos</h5>
+                            <p class="text-muted">Cuando aceptes una propuesta, aparecerá aquí.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(contracts)}" class="list-group list-group-flush">
+                            <div th:each="c : ${contracts}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="fw-bold mb-1" th:text="${c.detalle}">Detalle</h6>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary" th:text="${c.estado}">Estado</span>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="small text-muted">Inicio: <span th:text="${#temporals.format(c.fechaInicio, 'dd MMM')}">Fecha</span></div>
+                                        <div class="fw-bold mt-1">$<span th:text="${#numbers.formatInteger(c.costoTotal, 1, 'POINT')}">0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar: Reviews -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0"><h2 class="h5 fw-bold mb-0">Mis Reseñas</h2></div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(reviews)}" class="text-center py-4">
+                            <i class="far fa-comment-dots fa-2x text-muted mb-2"></i>
+                            <p class="text-muted small mb-0">Aún no has escrito reseñas.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(reviews)}" class="list-group list-group-flush">
+                            <div th:each="r : ${reviews}" class="list-group-item">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div class="text-warning small">
+                                        <i th:each="i : ${#numbers.sequence(1, r.calificacion)}" class="fas fa-star"></i>
+                                    </div>
+                                    <small class="text-muted" th:text="${#temporals.format(r.fechaResena, 'dd MMM')}">Fecha</small>
+                                </div>
+                                <p class="mb-1 small" th:text="${'&quot;' + r.comentario + '&quot;'}">Comentario</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

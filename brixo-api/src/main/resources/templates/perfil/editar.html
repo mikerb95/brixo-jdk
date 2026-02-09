@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Editar Perfil - Brixo</title></head>
+<body>
+<main layout:fragment="content" class="flex-grow-1">
+    <div class="container my-5" style="max-width:800px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 fw-bold">Editar Perfil</h1>
+            <a th:href="@{/panel}" class="btn btn-outline-secondary rounded-pill"><i class="fas fa-arrow-left me-2"></i>Volver al Panel</a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <form th:action="@{/perfil/actualizar}" method="post" enctype="multipart/form-data">
+                    <!-- Photo -->
+                    <div class="text-center mb-4">
+                        <img th:src="${user.fotoPerfil != null ? user.fotoPerfil : 'https://ui-avatars.com/api/?name=' + user.nombre + '&background=random'}"
+                             class="rounded-circle mb-3 object-fit-cover" width="120" height="120" alt="Avatar" id="avatarPreview">
+                        <div class="mt-2">
+                            <label for="foto_perfil" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-camera me-2"></i>Cambiar Foto</label>
+                            <input type="file" id="foto_perfil" name="fotoPerfil" class="d-none" accept="image/*">
+                        </div>
+                        <small class="text-muted d-block mt-2">JPG, PNG o WebP. Máx 5MB.</small>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label fw-semibold">Nombre Completo</label>
+                            <input type="text" class="form-control rounded-3 p-3" id="nombre" name="nombre" th:value="${user.nombre}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label fw-semibold">Teléfono</label>
+                            <input type="tel" class="form-control rounded-3 p-3" id="telefono" name="telefono" th:value="${user.telefono}">
+                        </div>
+                        <div class="col-12">
+                            <label for="direccion" class="form-label fw-semibold">Dirección</label>
+                            <input type="text" class="form-control rounded-3 p-3" id="direccion" name="direccion" th:value="${user.direccion}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ciudad" class="form-label fw-semibold">Ciudad</label>
+                            <input type="text" class="form-control rounded-3 p-3" id="ciudad" name="ciudad" th:value="${user.ciudad}" placeholder="Ej: Bogotá">
+                        </div>
+
+                        <!-- Contractor-specific fields -->
+                        <th:block th:if="${user.rol == 'contratista' or user.rol?.name() == 'CONTRATISTA'}">
+                            <div class="col-12">
+                                <label for="descripcion_perfil" class="form-label fw-semibold">Descripción del Perfil</label>
+                                <textarea class="form-control rounded-3 p-3" id="descripcion_perfil" name="descripcionPerfil" rows="4"
+                                          placeholder="Cuéntanos sobre tus servicios y experiencia..." th:text="${user.descripcionPerfil}"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label for="experiencia" class="form-label fw-semibold">Años de Experiencia</label>
+                                <input type="text" class="form-control rounded-3 p-3" id="experiencia" name="experiencia"
+                                       th:value="${user.experiencia}" placeholder="Ej: 5 años en plomería residencial">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Ubicación en el Mapa</label>
+                                <div id="mapaRegistro" style="height:300px;width:100%;border-radius:10px;margin-bottom:10px;"></div>
+                                <input id="registro_ubicacion" name="ubicacionMapa" type="text" class="form-control rounded-3 p-3"
+                                       placeholder="Selecciona en el mapa" th:value="${user.ubicacionMapa}" readonly>
+                                <small class="text-muted">Arrastra el marcador para actualizar tu ubicación.</small>
+                            </div>
+                        </th:block>
+
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block layout:fragment="scripts">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Avatar preview
+    const fileInput = document.getElementById('foto_perfil');
+    const preview = document.getElementById('avatarPreview');
+    if(fileInput && preview) {
+        fileInput.addEventListener('change', function() {
+            if(this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => preview.src = e.target.result;
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+
+    // Map for contractors
+    const mapDiv = document.getElementById('mapaRegistro');
+    if(mapDiv) {
+        const mapInput = document.getElementById('registro_ubicacion');
+        let lat = 4.6097, lng = -74.0817;
+        if(mapInput.value) { const p = mapInput.value.split(','); lat = parseFloat(p[0]); lng = parseFloat(p[1]); }
+        const map = L.map('mapaRegistro').setView([lat, lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+        const marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+        marker.on('dragend', () => { const p = marker.getLatLng(); mapInput.value = p.lat+','+p.lng; });
+        map.on('click', e => { marker.setLatLng(e.latlng); mapInput.value = e.latlng.lat+','+e.latlng.lng; });
+    }
+});
+</script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Mis Solicitudes - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:1000px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 fw-bold">Mis Solicitudes</h1>
+            <a th:href="@{/solicitud/nueva}" class="btn btn-primary rounded-pill fw-bold"><i class="fas fa-plus me-2"></i>Nueva Solicitud</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(solicitudes)}" class="text-center py-5">
+            <i class="fas fa-clipboard fa-4x text-muted mb-3"></i>
+            <h3 class="fw-bold">No tienes solicitudes</h3>
+            <p class="text-muted">Crea tu primera solicitud para encontrar profesionales.</p>
+            <a th:href="@{/solicitud/nueva}" class="btn btn-primary rounded-pill">Crear Solicitud</a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(solicitudes)}" class="row g-3">
+            <div th:each="s : ${solicitudes}" class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold mb-1" th:text="${s.titulo}">Título</h5>
+                                <p class="text-muted mb-2" th:text="${s.descripcion}">Descripción</p>
+                                <div class="d-flex gap-3 small text-secondary">
+                                    <span><i class="fas fa-map-marker-alt me-1"></i> <span th:text="${s.ubicacion ?: 'Sin ubicación'}">Ubicación</span></span>
+                                    <span><i class="far fa-calendar me-1"></i> <span th:text="${#temporals.format(s.creadoEn, 'dd MMM, yyyy')}">Fecha</span></span>
+                                    <span class="fw-bold text-dark">$<span th:text="${#numbers.formatInteger(s.presupuesto ?: 0, 1, 'POINT')}">0</span></span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-info bg-opacity-10 text-info" th:text="${s.estado}">Estado</span>
+                                <a th:href="@{/solicitud/editar/{id}(id=${s.id})}" class="btn btn-outline-primary btn-sm rounded-pill"><i class="fas fa-edit"></i></a>
+                                <a th:href="@{/solicitud/eliminar/{id}(id=${s.id})}" class="btn btn-outline-danger btn-sm rounded-pill" onclick="return confirm('¿Eliminar?');"><i class="fas fa-trash-alt"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
