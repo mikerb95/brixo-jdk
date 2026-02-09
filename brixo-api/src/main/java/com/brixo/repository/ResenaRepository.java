@@ -32,4 +32,14 @@ public interface ResenaRepository extends JpaRepository<Resena, Long> {
             WHERE c.contratista.id = :contratistaId
             """)
     Double getAverageRatingByContratistaId(@Param("contratistaId") Long contratistaId);
+
+    /** Reseñas escritas por un cliente. */
+    @Query("""
+            SELECT r FROM Resena r
+            JOIN FETCH r.contrato c
+            JOIN FETCH c.contratista
+            WHERE r.cliente.id = :clienteId
+            ORDER BY r.fecha DESC
+            """)
+    List<Resena> findByClienteId(@Param("clienteId") Long clienteId);
 }
