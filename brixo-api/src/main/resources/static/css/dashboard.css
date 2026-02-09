@@ -1,0 +1,71 @@
+/* =========================================
+   DASHBOARD / PANEL STYLES (Modern UI)
+   ========================================= */
+
+.card-dashboard {
+    border: none;
+    border-radius: var(--radius-xl);
+    background: #ffffff;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    overflow: hidden;
+}
+.card-dashboard:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0077a3 100%);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    border: 1px solid #f0f0f0;
+    transition: all 0.2s;
+}
+.stat-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+.stat-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem;
+}
+.stat-icon.blue   { background: rgba(0, 159, 217, 0.1); color: var(--primary-color); }
+.stat-icon.green  { background: rgba(25, 135, 84, 0.1);  color: #198754; }
+.stat-icon.orange { background: rgba(253, 126, 20, 0.1);  color: #fd7e14; }
+
+/* Badges "Soft" */
+.badge-soft {
+    padding: 0.5em 0.8em; border-radius: 6px;
+    font-weight: 600; font-size: 0.75rem; letter-spacing: 0.3px;
+}
+.badge-soft-primary { background-color: rgba(0, 159, 217, 0.1);  color: var(--primary-color); }
+.badge-soft-success { background-color: rgba(25, 135, 84, 0.1);   color: #198754; }
+.badge-soft-warning { background-color: rgba(255, 193, 7, 0.15);  color: #856404; }
+.badge-soft-danger  { background-color: rgba(220, 53, 69, 0.1);   color: #dc3545; }
+.badge-soft-info    { background-color: rgba(13, 202, 240, 0.1);  color: #0c8599; }
+
+/* Listas de items */
+.list-group-item-action {
+    border: none; border-bottom: 1px solid #f0f0f0;
+    padding: 1.25rem 1.5rem; transition: background 0.2s;
+}
+.list-group-item-action:last-child { border-bottom: none; }
+.list-group-item-action:hover { background-color: #f8f9fa; z-index: 1; }
+
+/* Empty States */
+.empty-state { text-align: center; padding: 3rem 1rem; }
+.empty-state-icon { font-size: 3rem; color: #dee2e6; margin-bottom: 1rem; }
