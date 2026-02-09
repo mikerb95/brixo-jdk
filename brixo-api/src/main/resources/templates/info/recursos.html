@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Recursos - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="py-5 text-center" style="background:var(--neutral-100);">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">Recursos para profesionales</h1>
+            <p class="lead text-muted">Herramientas y guías para potenciar tu perfil y atraer más clientes.</p>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:1000px;">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <i class="fas fa-rocket fa-2x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Guía de inicio rápido</h5>
+                    <p class="text-muted">Aprende a configurar tu perfil, establecer tu ubicación y empezar a recibir solicitudes en menos de 15 minutos.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <i class="fas fa-camera fa-2x text-success mb-3"></i>
+                    <h5 class="fw-bold">Tips para tu foto de perfil</h5>
+                    <p class="text-muted">Una buena foto de perfil aumenta tu tasa de contacto en un 60%. Aprende cómo lograr la foto ideal.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <i class="fas fa-calculator fa-2x text-warning mb-3"></i>
+                    <h5 class="fw-bold">Calculadora de presupuestos</h5>
+                    <p class="text-muted">Usa nuestra herramienta de cotización asistida por IA para estimar costos de materiales, personal y tiempo.</p>
+                    <a th:href="@{/cotizador}" class="btn btn-outline-primary btn-sm rounded-pill mt-2">Ir al cotizador</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <i class="fas fa-graduation-cap fa-2x text-info mb-3"></i>
+                    <h5 class="fw-bold">Cursos y certificaciones</h5>
+                    <p class="text-muted">Mejora tus habilidades con cursos recomendados y sube tus certificaciones para generar más confianza.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
