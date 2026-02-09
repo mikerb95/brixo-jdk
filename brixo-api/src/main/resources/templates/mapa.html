@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Mapa de Profesionales - Brixo</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    .main-container { height:calc(100vh - 72px); display:flex; }
+    .list-column { width:55%; overflow-y:auto; padding:20px; background:#fff; }
+    .map-column { width:45%; position:relative; }
+    #map { height:100%; width:100%; }
+    .pro-card { transition:all .2s; cursor:pointer; border:1px solid #e0e0e0; }
+    .pro-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.1); transform:translateY(-2px); }
+    .pro-card.active { border-color:#000; background-color:#f8f9fa; }
+    .rating-star { color:#ffc107; font-size:.8rem; }
+    @media(max-width:768px) {
+        .main-container { flex-direction:column-reverse; height:auto; }
+        .list-column, .map-column { width:100%; height:50vh; }
+    }
+</style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="main-container">
+        <!-- List Column -->
+        <div class="list-column">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><span th:text="${#lists.size(professionals)}">0</span> profesionales encontrados</h5>
+            </div>
+            <div class="row row-cols-1 g-3" id="cards-container">
+                <div th:each="pro : ${professionals}" class="col">
+                    <div class="card pro-card rounded-3 p-3"
+                         th:attr="data-id=${pro.id},data-lat=${pro.lat},data-lng=${pro.lng}">
+                        <div class="d-flex gap-3">
+                            <img th:src="${pro.imagen}" th:alt="${pro.nombre}" class="rounded-3 object-fit-cover" width="120" height="120" loading="lazy">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="fw-bold mb-1" th:text="${pro.profesion}">Profesión</h6>
+                                        <h5 class="fw-bold mb-1" th:text="${pro.nombre}">Nombre</h5>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="fw-bold"><i class="fas fa-star rating-star"></i> <span th:text="${pro.rating}">0</span></span>
+                                    <span class="text-muted small">(<span th:text="${pro.reviews}">0</span> reseñas)</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-end mt-2">
+                                    <span class="badge bg-light text-dark border">Súper Pro</span>
+                                    <div class="text-end">
+                                        <div class="fw-bold">Desde $<span th:text="${#numbers.formatInteger(pro.precio, 1, 'POINT')}">0</span></div>
+                                        <div class="small text-muted">por hora</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Map Column -->
+        <div class="map-column"><div id="map"></div></div>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script th:inline="javascript">
+var map = L.map('map').setView([4.6097, -74.0817], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+
+var professionals = /*[[${professionalsJson}]]*/ [];
+var markers = {};
+var customIcon = L.divIcon({ className:'', html:"<div style='background:#fff;border-radius:50%;padding:5px;box-shadow:0 2px 5px rgba(0,0,0,.3);width:30px;height:30px;display:flex;justify-content:center;align-items:center'><i class='fas fa-user text-primary'></i></div>", iconSize:[30,30], iconAnchor:[15,15] });
+var activeIcon = L.divIcon({ className:'', html:"<div style='background:#009fd9;color:#fff;border-radius:50%;padding:5px;box-shadow:0 2px 5px rgba(0,0,0,.3);width:40px;height:40px;display:flex;justify-content:center;align-items:center;transform:scale(1.1)'><i class='fas fa-user'></i></div>", iconSize:[40,40], iconAnchor:[20,20] });
+
+professionals.forEach(function(pro) {
+    var marker = L.marker([pro.lat, pro.lng], {icon: customIcon}).addTo(map);
+    marker.bindPopup('<div class="text-center"><h6 class="fw-bold mb-1">'+pro.nombre+'</h6><p class="mb-1 small">'+pro.profesion+'</p></div>');
+    markers[pro.id] = marker;
+    marker.on('click', function() { highlightCard(pro.id); });
+});
+
+if(professionals.length > 0) { map.fitBounds(new L.featureGroup(Object.values(markers)).getBounds().pad(0.1)); }
+
+document.querySelectorAll('.pro-card').forEach(card => {
+    card.addEventListener('mouseenter', function() { var id=this.dataset.id; if(markers[id]) { markers[id].setIcon(activeIcon); markers[id].setZIndexOffset(1000); }});
+    card.addEventListener('mouseleave', function() { var id=this.dataset.id; if(markers[id]) { markers[id].setIcon(customIcon); markers[id].setZIndexOffset(0); }});
+    card.addEventListener('click', function() {
+        var id=this.dataset.id, lat=this.dataset.lat, lng=this.dataset.lng;
+        map.flyTo([lat, lng], 15); markers[id].openPopup();
+        document.querySelectorAll('.pro-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+function highlightCard(id) {
+    var card = document.querySelector('.pro-card[data-id="'+id+'"]');
+    if(card) { card.scrollIntoView({behavior:'smooth',block:'center'}); document.querySelectorAll('.pro-card').forEach(c=>c.classList.remove('active')); card.classList.add('active'); }
+}
+</script>
+</th:block>
+</body>
+</html>

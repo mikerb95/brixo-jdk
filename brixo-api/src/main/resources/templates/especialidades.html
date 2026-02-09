@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/main}">
+<head><title>Especialidades - Brixo</title>
+<style>
+    .page-header { background:linear-gradient(135deg,var(--primary-color,#009fd9) 0%,var(--primary-hover,#0088b9) 100%); color:#fff; border-radius:16px; padding:2.5rem; margin-bottom:2rem; }
+    .category-card { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.08); transition:transform .3s,box-shadow .3s; margin-bottom:1.5rem; }
+    .category-card:hover { transform:translateY(-4px); box-shadow:0 10px 40px rgba(0,0,0,.12); }
+    .category-header { background:linear-gradient(135deg,#f8f9fa 0%,#fafafa 100%); padding:1.5rem; border-bottom:2px solid var(--primary-color,#009fd9); }
+    .category-icon { width:56px; height:56px; background:var(--primary-color,#009fd9); color:#fff; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+    .service-item { padding:1rem; border-bottom:1px solid #f3f4f6; transition:background .2s; display:flex; align-items:center; gap:1rem; text-decoration:none; color:inherit; }
+    .service-item:last-child { border-bottom:none; }
+    .service-item:hover { background:#fafafa; }
+    .service-icon { width:48px; height:48px; background:#f3f4f6; border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--primary-color,#009fd9); font-size:1.25rem; flex-shrink:0; }
+    .service-price { font-size:1.1rem; font-weight:700; color:var(--primary-color,#009fd9); }
+    .cta-section { background:linear-gradient(135deg,#0077a8 0%,#009fd9 100%); color:#fff; border-radius:16px; padding:2.5rem; text-align:center; }
+    .stats-section { background:#fff; border-radius:16px; padding:1.5rem; box-shadow:0 4px 20px rgba(0,0,0,.08); margin-bottom:2rem; }
+    .stat-number { font-size:2rem; font-weight:700; color:var(--primary-color,#009fd9); }
+</style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Especialidades Profesionales</h1>
+                    <p class="fs-5 mb-0 opacity-90">Encuentra expertos certificados en cada área. Más de 100 servicios profesionales a tu disposición.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <a th:href="@{/map}" class="btn btn-light btn-lg rounded-pill px-4"><i class="fas fa-map-marked-alt me-2"></i>Ver en Mapa</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-section">
+            <div class="row g-4">
+                <div class="col-6 col-md-3 text-center"><div class="stat-number"><i class="fas fa-briefcase me-2"></i><span th:text="${#lists.size(especialidades)}">0</span></div><div class="small text-muted">Especialidades</div></div>
+                <div class="col-6 col-md-3 text-center"><div class="stat-number"><i class="fas fa-tools me-2"></i>100+</div><div class="small text-muted">Servicios</div></div>
+                <div class="col-6 col-md-3 text-center"><div class="stat-number"><i class="fas fa-users me-2"></i>500+</div><div class="small text-muted">Profesionales</div></div>
+                <div class="col-6 col-md-3 text-center"><div class="stat-number"><i class="fas fa-star me-2"></i>4.8</div><div class="small text-muted">Calificación</div></div>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div th:if="${#lists.isEmpty(especialidades)}" class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>No hay especialidades disponibles en este momento.
+        </div>
+
+        <div th:each="esp : ${especialidades}" class="category-card">
+            <div class="category-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="category-icon"><i class="fas fa-tools"></i></div>
+                        <div>
+                            <h2 class="h3 mb-1 fw-bold" th:text="${esp.categoria.nombre}">Categoría</h2>
+                            <p class="text-muted mb-0" th:text="${esp.categoria.descripcion ?: 'Servicios profesionales especializados'}">Descripción</p>
+                        </div>
+                    </div>
+                    <a th:href="@{/especialidades/categoria/{id}(id=${esp.categoria.id})}" class="btn btn-outline-primary d-none d-md-inline-flex align-items-center">
+                        Ver todos <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="services-list">
+                <div th:if="${#lists.isEmpty(esp.servicios)}" class="p-4 text-center text-muted">
+                    <i class="fas fa-info-circle mb-2"></i><p class="mb-0">No hay servicios en esta categoría</p>
+                </div>
+                <a th:each="servicio : ${esp.servicios}" th:href="@{/map}" class="service-item">
+                    <div class="service-icon"><i class="fas fa-toolbox"></i></div>
+                    <div class="flex-grow-1">
+                        <h3 class="h6 mb-0 fw-semibold" th:text="${servicio.nombre}">Servicio</h3>
+                        <p class="text-muted small mb-0" th:text="${#strings.abbreviate(servicio.descripcion ?: 'Servicio profesional', 80)}">Descripción</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="service-price">$<span th:text="${#numbers.formatInteger(servicio.precioHora ?: 50, 1, 'POINT')}">50</span></div>
+                        <small class="text-muted">por hora</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section mt-4">
+            <h2 class="h3 fw-bold mb-3">¿Eres un profesional?</h2>
+            <p class="mb-4 opacity-90">Únete y conecta con cientos de clientes que necesitan tus servicios.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn btn-light btn-lg px-4"><i class="fas fa-user-plus me-2"></i>Registrarme</a>
+                <a th:href="@{/map}" class="btn btn-outline-light btn-lg px-4"><i class="fas fa-search me-2"></i>Buscar Servicios</a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
