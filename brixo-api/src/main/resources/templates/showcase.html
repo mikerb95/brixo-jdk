@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Design System Showcase - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:1000px;">
+        <h1 class="display-4 fw-bold mb-4">Brixo Design System</h1>
+        <p class="lead text-muted mb-5">Componentes visuales y estilos del sistema de diseño.</p>
+
+        <!-- Colors -->
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-3">Colores</h2>
+            <div class="row g-3">
+                <div class="col-md-3"><div class="rounded-4 p-4 text-white" style="background:var(--primary-color,#009fd9);">Primary #009fd9</div></div>
+                <div class="col-md-3"><div class="rounded-4 p-4 text-dark" style="background:var(--accent-warm,#ffc72c);">Accent Warm #ffc72c</div></div>
+                <div class="col-md-3"><div class="rounded-4 p-4 text-white" style="background:var(--neutral-900,#1a1a1a);">Neutral 900</div></div>
+                <div class="col-md-3"><div class="rounded-4 p-4 border" style="background:var(--neutral-50,#fafafa);">Neutral 50</div></div>
+            </div>
+        </section>
+
+        <!-- Buttons -->
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-3">Botones</h2>
+            <div class="d-flex flex-wrap gap-3">
+                <button class="btn btn-primary btn-lg rounded-pill">Primary</button>
+                <button class="btn btn-outline-primary btn-lg rounded-pill">Outline</button>
+                <button class="btn btn-success btn-lg rounded-pill">Success</button>
+                <button class="btn btn-warning btn-lg rounded-pill">Warning</button>
+                <button class="btn btn-danger btn-lg rounded-pill">Danger</button>
+                <button class="btn btn-dark btn-lg rounded-pill">Dark</button>
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-3">Cards</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <i class="fas fa-star fa-2x text-warning mb-3"></i>
+                        <h5 class="fw-bold">Feature Card</h5>
+                        <p class="text-muted mb-0">Ejemplo de tarjeta con icono y texto descriptivo.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <i class="fas fa-shield-alt fa-2x text-success mb-3"></i>
+                        <h5 class="fw-bold">Security Card</h5>
+                        <p class="text-muted mb-0">Tarjeta con estilo de seguridad y confianza.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <i class="fas fa-chart-line fa-2x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Analytics Card</h5>
+                        <p class="text-muted mb-0">Métricas y estadísticas del sistema.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typography -->
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-3">Tipografía</h2>
+            <h1>Heading 1</h1>
+            <h2>Heading 2</h2>
+            <h3>Heading 3</h3>
+            <h4>Heading 4</h4>
+            <p class="lead">Lead paragraph text — used for introductions.</p>
+            <p>Regular body text for content and descriptions.</p>
+            <p class="small text-muted">Small muted text for secondary information.</p>
+        </section>
+
+        <!-- Badges -->
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-3">Badges</h2>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-primary">Primary</span>
+                <span class="badge bg-success">Success</span>
+                <span class="badge bg-warning text-dark">Warning</span>
+                <span class="badge bg-danger">Danger</span>
+                <span class="badge bg-info">Info</span>
+                <span class="badge bg-dark">Dark</span>
+                <span class="badge bg-primary bg-opacity-10 text-primary">Soft Primary</span>
+                <span class="badge bg-success bg-opacity-10 text-success">Soft Success</span>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

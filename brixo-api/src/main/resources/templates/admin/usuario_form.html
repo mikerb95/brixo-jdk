@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title th:text="${editMode ? 'Editar Usuario' : 'Nuevo Usuario'} + ' - Admin Brixo'">Usuario</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:700px;">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <a th:href="@{/admin/usuarios}" class="btn btn-outline-secondary rounded-circle"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="h2 fw-bold mb-0" th:text="${editMode ? 'Editar Usuario' : 'Crear Usuario'}">Formulario</h1>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-5">
+                <form th:action="${editMode ? '/admin/usuarios/actualizar/' + usuario.tipo + '/' + usuario.id : '/admin/usuarios/guardar'}"
+                      method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tipo de usuario</label>
+                        <select name="tipoUsuario" class="form-select p-3" th:disabled="${editMode}" required>
+                            <option value="cliente" th:selected="${usuario != null and usuario.tipo == 'cliente'}">Cliente</option>
+                            <option value="contratista" th:selected="${usuario != null and usuario.tipo == 'contratista'}">Contratista</option>
+                            <option value="admin" th:selected="${usuario != null and usuario.tipo == 'admin'}">Administrador</option>
+                        </select>
+                        <input th:if="${editMode}" type="hidden" name="tipoUsuario" th:value="${usuario.tipo}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre completo</label>
+                        <input type="text" name="nombre" class="form-control p-3" required
+                               th:value="${usuario?.nombre}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Correo electrónico</label>
+                        <input type="email" name="correo" class="form-control p-3" required
+                               th:value="${usuario?.correo}">
+                    </div>
+                    <div class="mb-3" th:unless="${editMode}">
+                        <label class="form-label fw-semibold">Contraseña</label>
+                        <input type="password" name="contrasena" class="form-control p-3" required minlength="8">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Teléfono</label>
+                        <input type="tel" name="telefono" class="form-control p-3"
+                               th:value="${usuario?.telefono}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ciudad</label>
+                        <input type="text" name="ciudad" class="form-control p-3" placeholder="Ej: Bogotá"
+                               th:value="${usuario?.ciudad}">
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold"
+                                th:text="${editMode ? 'Guardar Cambios' : 'Crear Usuario'}">Guardar</button>
+                        <a th:href="@{/admin/usuarios}" class="btn btn-link text-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
