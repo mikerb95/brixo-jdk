@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Prensa - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="py-5 text-center" style="background:var(--neutral-100);">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">Sala de Prensa</h1>
+            <p class="lead text-muted">Noticias, comunicados y recursos de marca.</p>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:1000px;">
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-4">Últimas noticias</h3>
+
+                <article class="mb-4 pb-4 border-bottom">
+                    <span class="text-muted small">Diciembre 2025</span>
+                    <h5 class="fw-bold mt-1">Brixo lanza cotizador con inteligencia artificial</h5>
+                    <p class="text-muted">La nueva herramienta de cotización automatizada permite a los clientes estimar costos de servicios del hogar en segundos, utilizando modelos de lenguaje avanzados.</p>
+                </article>
+
+                <article class="mb-4 pb-4 border-bottom">
+                    <span class="text-muted small">Noviembre 2025</span>
+                    <h5 class="fw-bold mt-1">Mapa interactivo cubre toda el área de Bogotá</h5>
+                    <p class="text-muted">El mapa de profesionales de Brixo ahora integra datos de ubicación en tiempo real para más de 200 contratistas verificados en Bogotá y municipios aledaños.</p>
+                </article>
+
+                <article class="mb-4 pb-4">
+                    <span class="text-muted small">Octubre 2025</span>
+                    <h5 class="fw-bold mt-1">Brixo supera los 1.000 profesionales registrados</h5>
+                    <p class="text-muted">La plataforma alcanza un hito importante con más de 1.000 profesionales de servicios para el hogar registrados en Colombia.</p>
+                </article>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-3">Contacto de prensa</h5>
+                    <p class="text-muted small">Para entrevistas, datos o materiales de prensa:</p>
+                    <a href="mailto:prensa@brixo.co" class="fw-bold text-primary">prensa@brixo.co</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
