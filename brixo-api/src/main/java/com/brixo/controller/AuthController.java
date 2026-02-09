@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 /**
  * Controlador de autenticación.
  *
@@ -51,14 +53,13 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@ModelAttribute RegisterRequest form,
                            RedirectAttributes flash) {
-        try {
-            registroService.registrar(form);
-            flash.addFlashAttribute("message", "Cuenta creada correctamente. Ya puedes iniciar sesión.");
-            return "redirect:/login";
-        } catch (IllegalArgumentException e) {
-            flash.addFlashAttribute("registerError", e.getMessage());
+        List<String> errors = registroService.register(form);
+        if (!errors.isEmpty()) {
+            flash.addFlashAttribute("registerError", String.join(" ", errors));
             flash.addFlashAttribute("registerOld", form);
             return "redirect:/login";
         }
+        flash.addFlashAttribute("message", "Cuenta creada correctamente. Ya puedes iniciar sesión.");
+        return "redirect:/login";
     }
 }
