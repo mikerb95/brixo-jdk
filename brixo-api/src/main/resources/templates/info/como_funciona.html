@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Cómo Funciona - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="py-5 text-center" style="background:linear-gradient(135deg,#009fd9 0%,#0077B6 100%);color:#fff;">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">¿Cómo funciona Brixo?</h1>
+            <p class="lead" style="max-width:600px;margin:0 auto;">Tres pasos simples para solucionar lo que necesites en tu hogar.</p>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:1000px;">
+        <div class="row g-5 text-center">
+            <div class="col-md-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                    <i class="fas fa-search fa-2x text-primary"></i>
+                </div>
+                <h4 class="fw-bold">1. Busca</h4>
+                <p class="text-muted">Explora el mapa o las especialidades para encontrar profesionales cerca de ti.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                    <i class="fas fa-comments fa-2x text-primary"></i>
+                </div>
+                <h4 class="fw-bold">2. Contacta</h4>
+                <p class="text-muted">Envía un mensaje directo al profesional o publica una solicitud abierta.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width:80px;height:80px;">
+                    <i class="fas fa-handshake fa-2x text-primary"></i>
+                </div>
+                <h4 class="fw-bold">3. Contrata</h4>
+                <p class="text-muted">Acuerda los detalles, contrata al profesional y deja tu reseña al finalizar.</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <h4 class="fw-bold mb-3">¿Eres profesional?</h4>
+            <p class="text-muted mb-4">Únete a Brixo y llega a más clientes en tu zona.</p>
+            <a th:href="@{/unete-pro}" class="btn btn-primary btn-lg rounded-pill px-5">Únete como Pro</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

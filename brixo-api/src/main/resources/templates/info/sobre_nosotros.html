@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Sobre Nosotros - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <!-- Hero -->
+    <section class="py-5 text-center" style="background:linear-gradient(135deg,#009fd9 0%,#0077B6 100%);color:#fff;">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Sobre Brixo</h1>
+            <p class="lead" style="max-width:700px;margin:0 auto;">Conectando hogares con los mejores profesionales de servicios en Colombia.</p>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:900px;">
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-3">¿Qué es Brixo?</h2>
+            <p class="text-secondary" style="font-size:1.05rem;line-height:1.8;">
+                Brixo es una plataforma digital que conecta personas que necesitan servicios para el hogar con profesionales verificados en su zona.
+                Desde plomería hasta remodelaciones completas, facilitamos el proceso de encontrar, contactar y contratar al profesional ideal.
+            </p>
+        </section>
+
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-4">Nuestros valores</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <i class="fas fa-shield-alt fa-2x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Confianza</h5>
+                        <p class="text-muted mb-0">Verificamos a cada profesional para garantizar seguridad y calidad en cada servicio.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <i class="fas fa-star fa-2x text-warning mb-3"></i>
+                        <h5 class="fw-bold">Calidad</h5>
+                        <p class="text-muted mb-0">Promovemos estándares altos de servicio con reseñas reales y evaluaciones transparentes.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <i class="fas fa-lightbulb fa-2x text-info mb-3"></i>
+                        <h5 class="fw-bold">Innovación</h5>
+                        <p class="text-muted mb-0">Usamos tecnología inteligente — IA, mapa interactivo — para conectar de forma más eficiente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

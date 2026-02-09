@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Ayuda - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="py-5 text-center" style="background:var(--neutral-100);">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">¿En qué podemos ayudarte?</h1>
+            <p class="lead text-muted mb-4">Encuentra respuestas rápidas o contacta a nuestro equipo.</p>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:1000px;">
+        <div class="row g-4 mb-5">
+            <!-- Clientes -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-user me-2 text-primary"></i>Para clientes</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo publico una solicitud?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo contacto a un profesional?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo dejo una reseña?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Puedo cancelar una solicitud?</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Profesionales -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-tools me-2 text-success"></i>Para profesionales</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo me registro como pro?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo aparezco en el mapa?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo subo certificaciones?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo gestiono mi perfil?</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Cuenta -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-cog me-2 text-warning"></i>Seguridad y cuenta</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo cambio mi contraseña?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo protegen mis datos?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Cómo reporto un problema?</li>
+                        <li class="mb-2"><i class="fas fa-chevron-right me-2 small"></i>¿Puedo eliminar mi cuenta?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center py-4 rounded-4" style="background:var(--neutral-100);">
+            <h4 class="fw-bold mb-2">¿No encuentras lo que buscas?</h4>
+            <p class="text-muted mb-3">Nuestro equipo de soporte está disponible para ayudarte.</p>
+            <a href="mailto:soporte@brixo.co" class="btn btn-primary rounded-pill px-4">
+                <i class="fas fa-envelope me-2"></i>Contactar soporte
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
