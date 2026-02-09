@@ -115,21 +115,21 @@ public class SolicitudController {
         return "redirect:/panel";
     }
 
-    /** GET /tablon-tareas */
+    /** GET /tablon-tareas — Tablón público de solicitudes abiertas (para contratistas). */
     @GetMapping("/tablon-tareas")
     public String tablonTareas(@AuthenticationPrincipal BrixoUserPrincipal user,
                                Model model) {
         model.addAttribute("user", user);
         model.addAttribute("solicitudes", solicitudService.tablonAbierto());
-        return "solicitud/lista";
+        return "solicitudes";
     }
 
-    /** GET /solicitudes */
+    /** GET /solicitudes — Mis solicitudes (lista personal del usuario). */
     @GetMapping("/solicitudes")
     public String misSolicitudes(@AuthenticationPrincipal BrixoUserPrincipal user,
                                  Model model) {
         model.addAttribute("user", user);
         model.addAttribute("solicitudes", solicitudService.findByContratista(user.id()));
-        return "solicitudes";
+        return "solicitud/lista";
     }
 }

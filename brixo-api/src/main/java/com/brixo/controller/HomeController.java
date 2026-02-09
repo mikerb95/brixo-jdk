@@ -19,6 +19,7 @@ public class HomeController {
         if (user != null) {
             model.addAttribute("user", user);
         }
+        model.addAttribute("navMode", "overlay");
         return "index";
     }
 }
