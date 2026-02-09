@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Únete como Profesional - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="py-5 text-center text-white" style="background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Haz crecer tu negocio con Brixo</h1>
+            <p class="lead mb-4" style="max-width:650px;margin:0 auto;">Llega a más clientes, gestiona tu agenda y recibe pagos seguros.</p>
+            <a th:href="@{/login}" class="btn btn-primary btn-lg rounded-pill px-5">Registrarme como Pro</a>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:1000px;">
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
+                    <i class="fas fa-users fa-2x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Más clientes</h5>
+                    <p class="text-muted mb-0">Aparece en el mapa y recibe solicitudes de clientes cerca de ti.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
+                    <i class="fas fa-calendar-alt fa-2x text-success mb-3"></i>
+                    <h5 class="fw-bold">Gestiona tu agenda</h5>
+                    <p class="text-muted mb-0">Administra tus solicitudes, contratos y horarios desde tu panel.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
+                    <i class="fas fa-lock fa-2x text-warning mb-3"></i>
+                    <h5 class="fw-bold">Pagos seguros</h5>
+                    <p class="text-muted mb-0">Los acuerdos económicos se gestionan de forma transparente y segura.</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="mb-5">
+            <h3 class="fw-bold text-center mb-4">¿Cómo empezar?</h3>
+            <div class="row g-4 text-center">
+                <div class="col-md-3">
+                    <div class="fw-bold h2 text-primary mb-2">1</div>
+                    <h6 class="fw-bold">Regístrate</h6>
+                    <p class="text-muted small">Crea tu cuenta seleccionando "Contratista".</p>
+                </div>
+                <div class="col-md-3">
+                    <div class="fw-bold h2 text-primary mb-2">2</div>
+                    <h6 class="fw-bold">Completa tu perfil</h6>
+                    <p class="text-muted small">Agrega foto, especialidades y ubicación.</p>
+                </div>
+                <div class="col-md-3">
+                    <div class="fw-bold h2 text-primary mb-2">3</div>
+                    <h6 class="fw-bold">Recibe solicitudes</h6>
+                    <p class="text-muted small">Los clientes te encontrarán en el mapa.</p>
+                </div>
+                <div class="col-md-3">
+                    <div class="fw-bold h2 text-primary mb-2">4</div>
+                    <h6 class="fw-bold">Crece</h6>
+                    <p class="text-muted small">Acumula reseñas y sube tu reputación.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>
