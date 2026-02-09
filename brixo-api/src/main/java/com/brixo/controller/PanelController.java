@@ -50,7 +50,7 @@ public class PanelController {
         if (user.rol() == UserRole.CLIENTE) {
             List<Contrato> contracts = contratoRepo.findByClienteId(user.id());
             List<Resena> reviews = resenaRepo.findByClienteId(user.id());
-            List<Solicitud> solicitudes = solicitudRepo.findByClienteId(user.id());
+            List<Solicitud> solicitudes = solicitudRepo.findByClienteIdOrderByCreadoEnDesc(user.id());
 
             model.addAttribute("contracts", contracts);
             model.addAttribute("reviews", reviews);
@@ -61,7 +61,7 @@ public class PanelController {
         // Contratista
         List<Contrato> contracts = contratoRepo.findByContratistaId(user.id());
         List<Resena> reviews = resenaRepo.findByContratistaId(user.id());
-        List<Solicitud> solicitudesDisponibles = solicitudRepo.findByEstado(EstadoSolicitud.ABIERTA);
+        List<Solicitud> solicitudesDisponibles = solicitudRepo.findByEstadoOrderByCreadoEnDesc(EstadoSolicitud.ABIERTA);
 
         model.addAttribute("contracts", contracts);
         model.addAttribute("reviews", reviews);
