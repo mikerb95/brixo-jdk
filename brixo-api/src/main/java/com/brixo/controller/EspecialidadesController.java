@@ -22,8 +22,8 @@ public class EspecialidadesController {
 
     @GetMapping("/especialidades")
     public String index(Model model) {
-        var categorias = especialidadesService.getCategorias();
-        var serviciosPorCategoria = especialidadesService.getServiciosPorCategoria();
+        var categorias = especialidadesService.getAllCategorias();
+        var serviciosPorCategoria = especialidadesService.getServiciosByCategoria(null);
         model.addAttribute("categorias", categorias);
         model.addAttribute("especialidades", serviciosPorCategoria);
         return "especialidades";
@@ -31,7 +31,7 @@ public class EspecialidadesController {
 
     @GetMapping("/especialidades/categoria/{id}")
     public String categoria(@PathVariable Long id, Model model) {
-        var categoria = especialidadesService.getCategoria(id);
+        var categoria = especialidadesService.getCategoriaById(id);
         var servicios = especialidadesService.getServiciosByCategoria(id);
         model.addAttribute("categoria", categoria);
         model.addAttribute("servicios", servicios);

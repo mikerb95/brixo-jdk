@@ -1,6 +1,7 @@
 package com.brixo.controller;
 
 import com.brixo.config.BrixoUserDetailsService.BrixoUserPrincipal;
+import com.brixo.dto.SolicitudRequest;
 import com.brixo.enums.UserRole;
 import com.brixo.service.SolicitudService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,17 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+
 /**
  * Controlador de solicitudes de servicio.
- *
- * Rutas:
- *  GET  /solicitud/nueva           — Formulario nueva solicitud (cliente)
- *  POST /solicitud/guardar         — Crear solicitud
- *  GET  /solicitud/editar/{id}     — Formulario editar (cliente, dueño)
- *  POST /solicitud/actualizar/{id} — Actualizar solicitud
- *  GET  /solicitud/eliminar/{id}   — Eliminar solicitud (cliente, dueño)
- *  GET  /tablon-tareas             — Listado solicitudes abiertas (contratista)
- *  GET  /solicitudes               — Mis contratos asignados (contratista)
  */
 @Controller
 public class SolicitudController {
@@ -39,7 +33,6 @@ public class SolicitudController {
         model.addAttribute("user", user);
         model.addAttribute("idContratista", contratista);
 
-        // Pre-fill from cotizador (if available)
         @SuppressWarnings("unchecked")
         var prefill = (java.util.Map<String, String>) session.getAttribute("prefill_solicitud");
         if (prefill != null) {
@@ -54,26 +47,23 @@ public class SolicitudController {
     public String guardar(@AuthenticationPrincipal BrixoUserPrincipal user,
                           @RequestParam String titulo,
                           @RequestParam String descripcion,
-                          @RequestParam(defaultValue = "0") double presupuesto,
+                          @RequestParam(defaultValue = "0") String presupuesto,
                           @RequestParam(required = false) String ubicacion,
                           @RequestParam(required = false) String departamento,
                           @RequestParam(required = false) String ciudad,
-                          @RequestParam(name = "id_contratista", required = false) Long idContratista,
                           RedirectAttributes flash) {
         try {
             String ubicacionFinal = ubicacion != null ? ubicacion : "";
             if (ciudad != null && !ciudad.isBlank() && departamento != null && !departamento.isBlank()) {
                 ubicacionFinal = ciudad + ", " + departamento +
-                        (ubicacion != null && !ubicacion.isBlank() ? " - " + ubicacion : "");
+                        (!ubicacionFinal.isBlank() ? " - " + ubicacionFinal : "");
             }
 
-            solicitudService.crear(user.id(), titulo, descripcion, presupuesto, ubicacionFinal, idContratista);
-
-            String msg = idContratista != null
-                    ? "Solicitud enviada al contratista correctamente."
-                    : "Solicitud publicada en el tablón de tareas abiertas.";
-            flash.addFlashAttribute("message", msg);
-        } catch (IllegalArgumentException e) {
+            var req = new SolicitudRequest(titulo, descripcion,
+                    new BigDecimal(presupuesto), ubicacionFinal);
+            solicitudService.crear(user.id(), req);
+            flash.addFlashAttribute("message", "Solicitud publicada correctamente.");
+        } catch (Exception e) {
             flash.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/panel";
@@ -85,12 +75,12 @@ public class SolicitudController {
                          @PathVariable Long id,
                          Model model,
                          RedirectAttributes flash) {
-        var solicitud = solicitudService.getForOwner(id, user.id());
-        if (solicitud == null) {
-            flash.addFlashAttribute("error", "Solicitud no encontrada o sin permiso.");
+        var solicitud = solicitudService.findById(id);
+        if (solicitud.isEmpty()) {
+            flash.addFlashAttribute("error", "Solicitud no encontrada.");
             return "redirect:/panel";
         }
-        model.addAttribute("solicitud", solicitud);
+        model.addAttribute("solicitud", solicitud.get());
         return "solicitud/editar";
     }
 
@@ -100,11 +90,13 @@ public class SolicitudController {
                              @PathVariable Long id,
                              @RequestParam String titulo,
                              @RequestParam String descripcion,
-                             @RequestParam(defaultValue = "0") double presupuesto,
+                             @RequestParam(defaultValue = "0") String presupuesto,
                              @RequestParam(required = false) String ubicacion,
                              RedirectAttributes flash) {
         try {
-            solicitudService.actualizar(id, user.id(), titulo, descripcion, presupuesto, ubicacion);
+            var req = new SolicitudRequest(titulo, descripcion,
+                    new BigDecimal(presupuesto), ubicacion);
+            solicitudService.actualizar(id, user.id(), req);
             flash.addFlashAttribute("message", "Solicitud actualizada correctamente.");
         } catch (Exception e) {
             flash.addFlashAttribute("error", e.getMessage());
@@ -117,33 +109,27 @@ public class SolicitudController {
     public String eliminar(@AuthenticationPrincipal BrixoUserPrincipal user,
                            @PathVariable Long id,
                            RedirectAttributes flash) {
-        try {
-            solicitudService.eliminar(id, user.id());
-            flash.addFlashAttribute("message", "Solicitud eliminada correctamente.");
-        } catch (Exception e) {
-            flash.addFlashAttribute("error", e.getMessage());
-        }
+        boolean ok = solicitudService.eliminar(id, user.id());
+        flash.addFlashAttribute(ok ? "message" : "error",
+                ok ? "Solicitud eliminada." : "No tienes permiso para eliminar esta solicitud.");
         return "redirect:/panel";
     }
 
-    /** GET /tablon-tareas — Solicitudes abiertas para contratistas. */
+    /** GET /tablon-tareas */
     @GetMapping("/tablon-tareas")
     public String tablonTareas(@AuthenticationPrincipal BrixoUserPrincipal user,
                                Model model) {
-        var solicitudes = solicitudService.tablonAbierto();
         model.addAttribute("user", user);
-        model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("solicitudes", solicitudService.tablonAbierto());
         return "solicitud/lista";
     }
 
-    /** GET /solicitudes — Contratos del contratista autenticado. */
+    /** GET /solicitudes */
     @GetMapping("/solicitudes")
     public String misSolicitudes(@AuthenticationPrincipal BrixoUserPrincipal user,
                                  Model model) {
         model.addAttribute("user", user);
-        // For contratistas: show assigned solicitudes
-        var solicitudes = solicitudService.getByContratistaId(user.id());
-        model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("solicitudes", solicitudService.findByContratista(user.id()));
         return "solicitudes";
     }
 }

@@ -20,7 +20,7 @@ public class MapaController {
 
     @GetMapping({"/map", "/mapa"})
     public String index(Model model) {
-        var professionals = mapaService.getContratistaPins();
+        var professionals = mapaService.getAllPins();
         model.addAttribute("professionals", professionals);
         return "mapa";
     }

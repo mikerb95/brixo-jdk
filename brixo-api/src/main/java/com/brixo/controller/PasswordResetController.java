@@ -1,6 +1,7 @@
 package com.brixo.controller;
 
 import com.brixo.service.PasswordResetService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +34,13 @@ public class PasswordResetController {
     /** POST /password/send-reset */
     @PostMapping("/send-reset")
     public String sendResetLink(@RequestParam String correo,
+                                HttpServletRequest request,
                                 RedirectAttributes flash) {
         try {
-            resetService.sendResetLink(correo);
+            String baseUrl = request.getScheme() + "://" + request.getServerName()
+                    + (request.getServerPort() != 80 && request.getServerPort() != 443
+                    ? ":" + request.getServerPort() : "");
+            resetService.sendResetLink(correo, baseUrl);
             flash.addFlashAttribute("message",
                     "Si el correo existe, recibirás un enlace de recuperación en unos minutos.");
         } catch (Exception e) {
@@ -49,15 +54,15 @@ public class PasswordResetController {
     public String showResetForm(@PathVariable String token,
                                 Model model,
                                 RedirectAttributes flash) {
-        try {
-            String email = resetService.validateToken(token);
-            model.addAttribute("token", token);
-            model.addAttribute("email", email);
-            return "auth/reset_password";
-        } catch (IllegalArgumentException e) {
-            flash.addFlashAttribute("error", e.getMessage());
+        var emailOpt = resetService.validateToken(token);
+        if (emailOpt.isEmpty()) {
+            flash.addFlashAttribute("error",
+                    "El enlace de recuperación es inválido o ha expirado. Solicita uno nuevo.");
             return "redirect:/password/forgot";
         }
+        model.addAttribute("token", token);
+        model.addAttribute("email", emailOpt.get());
+        return "auth/reset_password";
     }
 
     /** POST /password/update */
@@ -71,13 +76,14 @@ public class PasswordResetController {
             flash.addFlashAttribute("error", "Las contraseñas no coinciden.");
             return "redirect:/password/reset/" + token;
         }
-        try {
-            resetService.resetPassword(token, email, password);
+        boolean ok = resetService.resetPassword(token, password);
+        if (ok) {
             flash.addFlashAttribute("message",
                     "¡Contraseña actualizada! Ya puedes iniciar sesión con tu nueva contraseña.");
             return "redirect:/login";
-        } catch (IllegalArgumentException e) {
-            flash.addFlashAttribute("error", e.getMessage());
+        } else {
+            flash.addFlashAttribute("error",
+                    "El enlace de recuperación es inválido o ha expirado.");
             return "redirect:/password/forgot";
         }
     }

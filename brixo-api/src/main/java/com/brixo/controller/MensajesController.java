@@ -1,6 +1,8 @@
 package com.brixo.controller;
 
 import com.brixo.config.BrixoUserDetailsService.BrixoUserPrincipal;
+import com.brixo.dto.MensajeRequest;
+import com.brixo.enums.UserRole;
 import com.brixo.service.MensajeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,12 +14,6 @@ import java.util.Map;
 
 /**
  * Controlador de mensajería.
- *
- * Rutas:
- *   GET  /mensajes                           — Lista de conversaciones
- *   GET  /mensajes/chat/{otroId}/{otroRol}   — Chat con un usuario
- *   POST /mensajes/enviar                    — Enviar mensaje (AJAX)
- *   GET  /mensajes/nuevos/{otroId}/{otroRol} — Polling nuevos mensajes (AJAX)
  */
 @Controller
 public class MensajesController {
@@ -32,7 +28,7 @@ public class MensajesController {
     @GetMapping("/mensajes")
     public String index(@AuthenticationPrincipal BrixoUserPrincipal user,
                         Model model) {
-        var conversaciones = mensajeService.getConversaciones(user.id(), user.rol().name().toLowerCase());
+        var conversaciones = mensajeService.getConversaciones(user.id(), user.rol());
         model.addAttribute("conversaciones", conversaciones);
         model.addAttribute("user", user);
         return "mensajes/index";
@@ -44,9 +40,9 @@ public class MensajesController {
                        @PathVariable Long otroId,
                        @PathVariable String otroRol,
                        Model model) {
-        var mensajes = mensajeService.getChat(user.id(), user.rol().name().toLowerCase(),
-                otroId, otroRol);
-        String nombreOtro = mensajeService.resolveUserName(otroId, otroRol);
+        UserRole otherRole = UserRole.valueOf(otroRol.toUpperCase());
+        var mensajes = mensajeService.getChat(user.id(), user.rol(), otroId, otherRole);
+        String nombreOtro = mensajeService.getNombreUsuario(otroId, otherRole);
 
         model.addAttribute("mensajes", mensajes);
         model.addAttribute("otroId", otroId);
@@ -67,8 +63,8 @@ public class MensajesController {
             @RequestParam("destinatario_rol") String destinatarioRol,
             @RequestParam String contenido) {
         try {
-            mensajeService.enviar(user.id(), user.rol().name().toLowerCase(),
-                    destinatarioId, destinatarioRol, contenido);
+            var req = new MensajeRequest(destinatarioId, destinatarioRol, contenido);
+            mensajeService.enviar(user.id(), user.rol(), req);
             return ResponseEntity.ok(Map.of("status", "success"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
@@ -81,8 +77,8 @@ public class MensajesController {
     public ResponseEntity<?> nuevos(@AuthenticationPrincipal BrixoUserPrincipal user,
                                     @PathVariable Long otroId,
                                     @PathVariable String otroRol) {
-        var nuevos = mensajeService.getNuevosMensajes(user.id(), user.rol().name().toLowerCase(),
-                otroId, otroRol);
+        UserRole otherRole = UserRole.valueOf(otroRol.toUpperCase());
+        var nuevos = mensajeService.getNuevos(user.id(), user.rol(), otroId, otherRole, null);
         return ResponseEntity.ok(nuevos);
     }
 }
