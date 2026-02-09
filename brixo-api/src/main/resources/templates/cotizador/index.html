@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Cotizador IA - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:800px;">
+        <div class="text-center mb-5">
+            <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+            <h1 class="display-6 fw-bold">Cotizador Inteligente</h1>
+            <p class="lead text-muted">Describe tu proyecto y nuestra IA generará una cotización estimada con materiales, personal y tiempos.</p>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-5">
+                <form id="cotizadorForm">
+                    <div class="mb-4">
+                        <label for="descripcion" class="form-label fw-semibold">¿Qué necesitas?</label>
+                        <textarea class="form-control p-3" id="descripcion" name="descripcion" rows="5"
+                                  placeholder="Ej: Necesito remodelar mi baño completo de 3x2 metros, incluyendo cambio de piso, instalación de ducha nueva y pintura..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold" id="btnGenerar">
+                        <i class="fas fa-magic me-2"></i>Generar Cotización
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="resultado" class="mt-4" style="display:none;">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-5">
+                    <h3 class="fw-bold mb-4"><i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Cotización Estimada</h3>
+                    <div id="contenidoCotizacion"></div>
+
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="fw-bold">Total Estimado: <span id="totalEstimado" class="text-primary">$0</span></h4>
+                        <form th:action="@{/cotizador/confirmar}" method="post" id="confirmarForm">
+                            <input type="hidden" name="cotizacionJson" id="cotizacionJson">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold">
+                                <i class="fas fa-check-circle me-2"></i>Crear Solicitud con esta cotización
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block layout:fragment="scripts">
+<script>
+document.getElementById('cotizadorForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnGenerar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generando cotización...';
+
+    fetch('/cotizador/generar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ descripcion: document.getElementById('descripcion').value })
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magic me-2"></i>Generar Cotización';
+
+        let html = '';
+        if(data.materiales && data.materiales.length) {
+            html += '<h5 class="fw-bold mb-3">Materiales</h5><table class="table table-sm"><thead><tr><th>Material</th><th>Cant.</th><th>Precio</th></tr></thead><tbody>';
+            data.materiales.forEach(m => { html += '<tr><td>'+m.nombre+'</td><td>'+m.cantidad+'</td><td>$'+Number(m.costo).toLocaleString('es-CO')+'</td></tr>'; });
+            html += '</tbody></table>';
+        }
+        if(data.personal && data.personal.length) {
+            html += '<h5 class="fw-bold mb-3 mt-4">Personal</h5><table class="table table-sm"><thead><tr><th>Rol</th><th>Horas</th><th>Costo</th></tr></thead><tbody>';
+            data.personal.forEach(p => { html += '<tr><td>'+p.rol+'</td><td>'+p.horas+'</td><td>$'+Number(p.costo).toLocaleString('es-CO')+'</td></tr>'; });
+            html += '</tbody></table>';
+        }
+        if(data.tiempoEstimado) html += '<p class="mt-3"><i class="fas fa-clock me-2"></i><strong>Tiempo estimado:</strong> '+data.tiempoEstimado+'</p>';
+
+        document.getElementById('contenidoCotizacion').innerHTML = html;
+        document.getElementById('totalEstimado').textContent = '$'+Number(data.totalEstimado || 0).toLocaleString('es-CO');
+        document.getElementById('cotizacionJson').value = JSON.stringify(data);
+        document.getElementById('resultado').style.display = 'block';
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magic me-2"></i>Generar Cotización';
+        alert('Error al generar cotización. Intenta de nuevo.');
+    });
+});
+</script>
+</th:block>
+</body>
+</html>

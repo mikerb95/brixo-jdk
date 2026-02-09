@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Admin Dashboard - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:1200px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 fw-bold"><i class="fas fa-tachometer-alt me-2"></i>Panel de Administración</h1>
+            <a th:href="@{/admin/usuarios}" class="btn btn-primary rounded-pill"><i class="fas fa-users me-2"></i>Gestionar Usuarios</a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                    <h3 class="fw-bold" th:text="${stats.totalClientes}">0</h3>
+                    <span class="text-muted">Clientes</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                    <i class="fas fa-hard-hat fa-2x text-success mb-2"></i>
+                    <h3 class="fw-bold" th:text="${stats.totalContratistas}">0</h3>
+                    <span class="text-muted">Contratistas</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                    <i class="fas fa-clipboard-list fa-2x text-warning mb-2"></i>
+                    <h3 class="fw-bold" th:text="${stats.totalSolicitudes}">0</h3>
+                    <span class="text-muted">Solicitudes</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                    <i class="fas fa-file-contract fa-2x text-info mb-2"></i>
+                    <h3 class="fw-bold" th:text="${stats.totalContratos}">0</h3>
+                    <span class="text-muted">Contratos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a th:href="@{/admin/usuarios}" class="card border-0 shadow-sm rounded-4 p-4 text-decoration-none text-dark h-100">
+                    <i class="fas fa-user-cog fa-2x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Gestión de Usuarios</h5>
+                    <p class="text-muted mb-0">Crear, editar y eliminar usuarios del sistema.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/reportes/contratistas}" class="card border-0 shadow-sm rounded-4 p-4 text-decoration-none text-dark h-100">
+                    <i class="fas fa-chart-bar fa-2x text-success mb-3"></i>
+                    <h5 class="fw-bold">Reportes</h5>
+                    <p class="text-muted mb-0">Ver reportes de contratistas y solicitudes.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/analytics/dashboard}" class="card border-0 shadow-sm rounded-4 p-4 text-decoration-none text-dark h-100">
+                    <i class="fas fa-chart-line fa-2x text-warning mb-3"></i>
+                    <h5 class="fw-bold">Analytics</h5>
+                    <p class="text-muted mb-0">Métricas de uso y eventos de la plataforma.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
