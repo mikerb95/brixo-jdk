@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Blog - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="py-5 text-center" style="background:var(--neutral-100);">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">Blog Brixo</h1>
+            <p class="lead text-muted">Consejos, guías y novedades para tu hogar y tu negocio.</p>
+        </div>
+    </section>
+
+    <div class="container py-5" style="max-width:1000px;">
+
+        <!-- Featured -->
+        <div class="card border-0 shadow-sm rounded-4 mb-5 overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-5" style="background:#e9ecef;min-height:280px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-utensils fa-4x text-muted"></i>
+                </div>
+                <div class="col-md-7 p-4 d-flex flex-column justify-content-center">
+                    <span class="badge bg-primary bg-opacity-10 text-primary mb-2" style="width:fit-content;">Destacado</span>
+                    <h3 class="fw-bold">Guía completa: Remodelación de cocinas en 2026</h3>
+                    <p class="text-muted">Todo lo que necesitas saber antes de remodelar tu cocina: costos promedio, materiales recomendados, y cómo elegir al profesional ideal.</p>
+                    <span class="text-muted small">Enero 2026 · 8 min lectura</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <h4 class="fw-bold mb-4">Artículos recientes</h4>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                    <div style="background:#e9ecef;height:160px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-bolt fa-2x text-muted"></i>
+                    </div>
+                    <div class="p-3">
+                        <span class="badge bg-warning bg-opacity-10 text-warning small">Electricidad</span>
+                        <h6 class="fw-bold mt-2">5 señales de que necesitas revisar tu instalación eléctrica</h6>
+                        <span class="text-muted small">Diciembre 2025</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                    <div style="background:#e9ecef;height:160px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-faucet fa-2x text-muted"></i>
+                    </div>
+                    <div class="p-3">
+                        <span class="badge bg-info bg-opacity-10 text-info small">Plomería</span>
+                        <h6 class="fw-bold mt-2">Cómo prevenir daños por agua en tu hogar</h6>
+                        <span class="text-muted small">Noviembre 2025</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                    <div style="background:#e9ecef;height:160px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-tools fa-2x text-muted"></i>
+                    </div>
+                    <div class="p-3">
+                        <span class="badge bg-success bg-opacity-10 text-success small">Para profesionales</span>
+                        <h6 class="fw-bold mt-2">3 tips para mejorar tu perfil y atraer más clientes</h6>
+                        <span class="text-muted small">Octubre 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

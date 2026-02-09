@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Política de Cookies - Brixo</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-5" style="max-width:800px;">
+        <h1 class="display-5 fw-bold mb-2">Política de Cookies</h1>
+        <p class="text-muted mb-5">Última actualización: Enero 2026</p>
+
+        <section class="mb-5">
+            <h3 class="fw-bold mb-3">¿Qué son las cookies?</h3>
+            <p>Las cookies son pequeños archivos de texto que se almacenan en tu navegador cuando visitas un sitio web. Nos ayudan a recordar tus preferencias y mejorar tu experiencia.</p>
+        </section>
+
+        <section class="mb-5">
+            <h3 class="fw-bold mb-3">Cookies necesarias</h3>
+            <p>Estas cookies son esenciales para el funcionamiento del sitio. No se pueden desactivar.</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr><th>Cookie</th><th>Propósito</th><th>Duración</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>SESSION</code></td><td>Mantener la sesión de usuario activa.</td><td>2 horas</td></tr>
+                        <tr><td><code>XSRF-TOKEN</code></td><td>Protección contra ataques CSRF.</td><td>Sesión</td></tr>
+                        <tr><td><code>brixo_cookie_consent</code></td><td>Recordar tu decisión sobre cookies.</td><td>1 año</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h3 class="fw-bold mb-3">Cookies de analítica</h3>
+            <p>Utilizamos un sistema de analítica propio (first-party) para entender cómo se usa la plataforma. No usamos Google Analytics ni servicios de terceros.</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr><th>Cookie</th><th>Propósito</th><th>Duración</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>bx_vid</code></td><td>Identificador anónimo de visitante.</td><td>1 año</td></tr>
+                        <tr><td><code>bx_sid</code></td><td>Identificador de sesión de analítica.</td><td>Sesión</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h3 class="fw-bold mb-3">Cookies de marketing</h3>
+            <p>Brixo <strong>no utiliza</strong> cookies de marketing, publicidad de terceros, ni rastreadores externos.</p>
+        </section>
+
+        <section class="mb-5">
+            <h3 class="fw-bold mb-3">¿Cómo gestionar las cookies?</h3>
+            <p>Puedes eliminar o bloquear las cookies desde la configuración de tu navegador:</p>
+            <ul>
+                <li><strong>Chrome:</strong> Configuración → Privacidad y seguridad → Cookies</li>
+                <li><strong>Firefox:</strong> Configuración → Privacidad y seguridad → Cookies y datos del sitio</li>
+                <li><strong>Safari:</strong> Preferencias → Privacidad → Gestionar datos de sitios web</li>
+                <li><strong>Edge:</strong> Configuración → Cookies y permisos de sitios</li>
+            </ul>
+        </section>
+
+        <div class="alert alert-info rounded-4">
+            <p class="mb-0"><i class="fas fa-info-circle me-2"></i>Si tienes preguntas sobre nuestra política de cookies, contacta a <a href="mailto:privacidad@brixo.co" class="fw-bold">privacidad@brixo.co</a>.</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>
