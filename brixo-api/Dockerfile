@@ -1,46 +1,81 @@
-# ═══════════════════════════════════════════════════
-# Brixo API — Multi-stage Docker build (Java 21)
-# ═══════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
+# Brixo API — Multi-stage Docker build
+# Stack:  Spring Boot 3.3.5 / Java 21 / Maven
+# Stages: (1) deps  →  (2) build  →  (3) runtime (JRE-only)
+# ═══════════════════════════════════════════════════════════════
 
-# ── Stage 1: Build ──
-FROM eclipse-temurin:21-jdk-alpine AS builder
+# ────────────────────────────────────────────────
+# Stage 1 — Dependency cache
+# ────────────────────────────────────────────────
+FROM eclipse-temurin:21-jdk-alpine AS deps
 
 WORKDIR /app
 
-# Copiar Maven wrapper y pom.xml primero (layer caching)
+# Solo pom + wrapper → capa cacheada mientras no cambien deps
 COPY pom.xml .
 COPY .mvn .mvn
 COPY mvnw .
 RUN chmod +x mvnw
 
-# Descargar dependencias (cacheado si pom.xml no cambia)
-RUN ./mvnw dependency:go-offline -B
+# Resolver dependencias offline (cache de Maven en la capa)
+RUN --mount=type=cache,target=/root/.m2/repository \
+    ./mvnw dependency:go-offline -B -q
 
-# Copiar código fuente y compilar
+# ────────────────────────────────────────────────
+# Stage 2 — Compilación
+# ────────────────────────────────────────────────
+FROM deps AS builder
+
 COPY src src
-RUN ./mvnw package -DskipTests -B
 
-# ── Stage 2: Runtime ──
-FROM eclipse-temurin:21-jre-alpine
+# Compilar sin tests — reutiliza cache de Maven
+RUN --mount=type=cache,target=/root/.m2/repository \
+    ./mvnw package -DskipTests -B -q \
+ && mv target/*.jar target/app.jar
+
+# Extraer Spring Boot layered JAR para optimizar capas Docker
+RUN java -Djarmode=layertools -jar target/app.jar extract --destination /layers
+
+# ────────────────────────────────────────────────
+# Stage 3 — Runtime (solo JRE, ~200 MB)
+# ────────────────────────────────────────────────
+FROM eclipse-temurin:21-jre-alpine AS runtime
+
+LABEL maintainer="Brixo Team" \
+      description="Brixo API — Spring Boot 3.3.5 / Java 21" \
+      version="1.0.0"
 
 WORKDIR /app
 
-# Copiar JAR desde la etapa de build
-COPY --from=builder /app/target/*.jar app.jar
-
-# Crear directorio de uploads
-RUN mkdir -p uploads/profiles
+# Instalar curl para healthchecks
+RUN apk add --no-cache curl
 
 # Usuario no-root
 RUN addgroup -S brixo && adduser -S brixo -G brixo
-RUN chown -R brixo:brixo /app
+
+# Copiar capas del JAR (orden = menos → más volátil → mejor cache)
+COPY --from=builder /layers/dependencies/        ./
+COPY --from=builder /layers/spring-boot-loader/  ./
+COPY --from=builder /layers/snapshot-dependencies/ ./
+COPY --from=builder /layers/application/         ./
+
+# Directorios de escritura
+RUN mkdir -p uploads/profiles logs \
+ && chown -R brixo:brixo /app
+
 USER brixo
 
 EXPOSE 8080
 
-# Habilitar Virtual Threads + perfil de producción
+# Health-check integrado
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# JVM tuning: ZGC generacional, contenedor-aware, Virtual Threads
 ENTRYPOINT ["java", \
     "-XX:+UseZGC", \
     "-XX:+ZGenerational", \
-    "-Dspring.profiles.active=prod", \
-    "-jar", "app.jar"]
+    "-XX:MaxRAMPercentage=75.0", \
+    "-XX:+UseContainerSupport", \
+    "-Djava.security.egd=file:/dev/./urandom", \
+    "org.springframework.boot.loader.launch.JarLauncher"]
