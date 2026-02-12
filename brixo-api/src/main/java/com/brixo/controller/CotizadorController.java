@@ -95,7 +95,15 @@ public class CotizadorController {
         ));
 
         session.removeAttribute("ultima_cotizacion");
-        return "redirect:/solicitud/nueva";
+        flash.addFlashAttribute("message", "Cotización confirmada. Tu solicitud ha sido creada.");
+        return "redirect:/cotizador/exito";
+    }
+
+    /** GET /cotizador/exito — Pantalla de éxito post-confirmación. */
+    @GetMapping("/exito")
+    public String exito(@AuthenticationPrincipal BrixoUserPrincipal user, Model model) {
+        if (user != null) model.addAttribute("user", user);
+        return "cotizador/exito";
     }
 
     private String buildDesglose(CotizacionResult data) {

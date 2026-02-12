@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 // ── Recursos estáticos ──
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/presentation/**", "/favicon.ico").permitAll()
 
                 // ── Rutas públicas ──
                 .requestMatchers(
@@ -49,7 +49,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/sobre-nosotros", "/como-funciona", "/seguridad", "/ayuda",
                     "/unete-pro", "/historias-exito", "/recursos", "/carreras",
-                    "/prensa", "/blog", "/politica-cookies"
+                    "/prensa", "/blog", "/politica-cookies",
+                    "/servicios", "/servicios/**", "/productos"
                 ).permitAll()
 
                 // ── Admin — requiere rol ADMIN ──

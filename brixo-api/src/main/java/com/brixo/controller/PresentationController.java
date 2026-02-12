@@ -13,17 +13,17 @@ import java.util.concurrent.atomic.AtomicReference;
  * Controlador de la presentación académica.
  *
  * Rutas de vista:
- *   GET /slides      — Proyector de diapositivas (pantalla principal)
- *   GET /remote      — Control remoto móvil
- *   GET /presenter   — Notas del presentador
- *   GET /main-panel  — Panel de control completo
- *   GET /demo        — Proyector de demo (slides + iframe de demo URL)
+ * GET /slides — Proyector de diapositivas (pantalla principal)
+ * GET /remote — Control remoto móvil
+ * GET /presenter — Notas del presentador
+ * GET /main-panel — Panel de control completo
+ * GET /demo — Proyector de demo (slides + iframe de demo URL)
  *
  * API (estado compartido en memoria):
- *   GET  /api/slide  — Estado actual {slide: N}
- *   POST /api/slide  — Cambiar slide {slide: N}
- *   GET  /api/demo   — Estado de demo {url: "...", active: true/false}
- *   POST /api/demo   — Cambiar demo URL {url: "...", active: true/false}
+ * GET /api/slide — Estado actual {slide: N}
+ * POST /api/slide — Cambiar slide {slide: N}
+ * GET /api/demo — Estado de demo {url: "...", active: true/false}
+ * POST /api/demo — Cambiar demo URL {url: "...", active: true/false}
  */
 @Controller
 public class PresentationController {
