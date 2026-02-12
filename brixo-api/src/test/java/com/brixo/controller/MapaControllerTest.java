@@ -34,8 +34,7 @@ class MapaControllerTest {
     void mapa_returnsViewWithMapMode() throws Exception {
         List<ContratistaMapPin> pins = List.of(
                 new ContratistaMapPin(1L, "Juan", "Bogotá", null,
-                        4.6097, -74.0817, 4.5, 10, List.of("Plomería"))
-        );
+                        4.6097, -74.0817, 4.5, 10, List.of("Plomería")));
         when(mapaService.getAllPins()).thenReturn(pins);
 
         mockMvc.perform(get("/mapa"))
