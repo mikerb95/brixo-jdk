@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Portafolio de Servicios</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center" style="max-width: 700px;">
+        <h1 class="display-4">Portafolio de Servicios</h1>
+        <p class="lead">¿Necesitas profesionales fiables para obra, construcción, plomería, electricidad, domótica,
+            carpintería y más? En Brixo conectamos tu proyecto con técnicos verificados, presupuestos claros y
+            garantía de calidad. Publica tu trabajo y recibe ofertas competitivas en menos de 24 horas.</p>
+        <p>
+            <a class="btn btn-lg btn-primary" th:href="@{/solicitud/nueva}" role="button">Publica tu proyecto gratis</a>
+            <a class="btn btn-lg btn-outline-primary" th:href="@{/como-funciona}" role="button">Cómo funciona</a>
+        </p>
+    </div>
+
+    <div class="px-4 pt-5 my-5 text-center border-bottom">
+        <h1 class="display-4 fw-bold text-body-emphasis">Plataforma de Servicios</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">Encuentra profesionales verificados para cualquier tipo de proyecto.
+                Desde remodelaciones completas hasta reparaciones rápidas, nuestros contratistas están listos para ayudarte.</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+                <a th:href="@{/solicitudes}" class="btn btn-primary btn-lg px-4 me-sm-3">Ver contratos</a>
+                <a th:href="@{/mapa}" class="btn btn-outline-secondary btn-lg px-4">Ver profesionales</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Básico</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">Gratis</h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Publica solicitudes</li>
+                            <li>Chat con contratistas</li>
+                            <li>Cotizador IA básico</li>
+                            <li>Soporte por email</li>
+                        </ul>
+                        <a th:href="@{/login}" class="w-100 btn btn-lg btn-outline-primary">Registrarse gratis</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Pro</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">$15 <small class="text-muted fw-light">/ mes</small></h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Todo lo Básico</li>
+                            <li>Cotizaciones ilimitadas</li>
+                            <li>Reportes XLSX</li>
+                            <li>Soporte prioritario</li>
+                        </ul>
+                        <a th:href="@{/login}" class="w-100 btn btn-lg btn-primary">Comenzar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Empresa</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">$29 <small class="text-muted fw-light">/ mes</small></h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Todo lo Pro</li>
+                            <li>Dashboard analytics</li>
+                            <li>Soporte telefónico</li>
+                            <li>API de integración</li>
+                        </ul>
+                        <a th:href="@{/ayuda}" class="w-100 btn btn-lg btn-primary">Contáctanos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
