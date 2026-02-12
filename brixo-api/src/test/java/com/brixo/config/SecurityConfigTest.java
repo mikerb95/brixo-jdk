@@ -30,7 +30,7 @@ class SecurityConfigTest {
     private MockMvc mockMvc;
 
     // ═══════════════════════════════════════════
-    //  Rutas públicas — deben ser accesibles sin auth
+    // Rutas públicas — deben ser accesibles sin auth
     // ═══════════════════════════════════════════
 
     @Nested
@@ -103,7 +103,7 @@ class SecurityConfigTest {
     }
 
     // ═══════════════════════════════════════════
-    //  Rutas protegidas — requieren autenticación
+    // Rutas protegidas — requieren autenticación
     // ═══════════════════════════════════════════
 
     @Nested
@@ -139,7 +139,7 @@ class SecurityConfigTest {
     }
 
     // ═══════════════════════════════════════════
-    //  Recursos estáticos — siempre accesibles
+    // Recursos estáticos — siempre accesibles
     // ═══════════════════════════════════════════
 
     @Test
