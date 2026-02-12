@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${servicio.nombre} + ' - Brixo'">Detalle del Servicio</title>
+    <style>
+        .gallery-main-img {
+            height: 400px; object-fit: cover; width: 100%;
+            border-radius: 8px; cursor: pointer;
+        }
+        .sticky-booking-card { position: sticky; top: 90px; z-index: 100; }
+        .rating-stars { color: #ffc107; font-size: 0.9rem; }
+        .feature-icon {
+            width: 40px; height: 40px; background-color: #e3f2fd; color: #009fd9;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container py-4">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/servicios}" class="text-decoration-none text-muted">Servicios</a></li>
+                <li class="breadcrumb-item" th:if="${servicio.categoria != null}">
+                    <a th:href="@{'/especialidades/categoria/' + ${servicio.categoria.id}}"
+                       class="text-decoration-none text-muted"
+                       th:text="${servicio.categoria.nombre}">Categoría</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Detalles del servicio</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-lg-8">
+
+                <!-- Imagen principal -->
+                <div class="mb-4">
+                    <img th:src="${servicio.imagenUrl ?: '/images/placeholder-service.jpg'}"
+                         id="mainImage" class="gallery-main-img shadow-sm"
+                         th:alt="${servicio.nombre}">
+                </div>
+
+                <!-- Detalle móvil -->
+                <div class="d-lg-none mb-4">
+                    <h1 class="fw-bold mb-2" th:text="${servicio.nombre}">Servicio</h1>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rating-stars me-2">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold text-primary mb-0"
+                        th:text="'$' + ${#numbers.formatDecimal(servicio.precioEstimado ?: 0, 0, 'COMMA', 0, 'POINT')}">$0</h2>
+                </div>
+
+                <!-- Descripción -->
+                <section class="mb-5">
+                    <h3 class="h4 fw-bold mb-3">Descripción del servicio</h3>
+                    <p class="lead fs-6 text-secondary" th:text="${servicio.descripcion}">Descripción</p>
+
+                    <div class="row mt-4">
+                        <h5 class="fw-bold mb-3">Lo que incluye:</h5>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="feature-icon"><i class="fas fa-check"></i></div>
+                                <span>Diagnóstico inicial</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="feature-icon"><i class="fas fa-check"></i></div>
+                                <span>Materiales incluidos</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="feature-icon"><i class="fas fa-check"></i></div>
+                                <span>Garantía de calidad</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="feature-icon"><i class="fas fa-check"></i></div>
+                                <span>Profesional verificado</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="my-5">
+
+                <!-- Sobre el profesional (placeholder) -->
+                <section class="mb-5">
+                    <h3 class="h4 fw-bold mb-4">Sobre el servicio</h3>
+                    <div class="card border-0 bg-light rounded-4 p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-3"
+                                 style="width:80px;height:80px;">
+                                <i class="fas fa-tools text-white" style="font-size:2rem;"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1" th:text="${servicio.nombre}">Servicio</h5>
+                                <p class="text-muted mb-1"
+                                   th:text="${servicio.categoria != null ? servicio.categoria.nombre : 'General'}">Categoría</p>
+                                <div class="d-flex align-items-center text-warning small">
+                                    <i class="fas fa-star me-1"></i>
+                                    <span class="fw-bold text-dark me-1">4.5</span>
+                                    <span class="text-muted">(disponible pronto)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Sidebar de contratación -->
+            <div class="col-lg-4">
+                <div class="sticky-booking-card">
+                    <div class="card shadow-sm border rounded-4">
+                        <div class="card-body p-4">
+                            <div class="d-none d-lg-block">
+                                <h4 class="fw-bold mb-2" th:text="${servicio.nombre}">Servicio</h4>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rating-stars me-2">
+                                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="text-muted small d-block mb-1">Precio estimado</span>
+                                <div class="d-flex align-items-baseline">
+                                    <h2 class="fw-bold text-dark mb-0"
+                                        th:text="'$' + ${#numbers.formatDecimal(servicio.precioEstimado ?: 0, 0, 'COMMA', 0, 'POINT')}">$0</h2>
+                                    <span class="text-muted ms-2">/ servicio</span>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/cotizador}" class="btn btn-primary btn-lg fw-bold rounded-pill">Solicitar Cotización</a>
+                                <a th:href="@{/mapa}" class="btn btn-outline-secondary btn-lg fw-bold rounded-pill">Buscar Profesional</a>
+                            </div>
+
+                            <div class="mt-3 text-center">
+                                <small class="text-muted"><i class="fas fa-shield-alt text-success me-1"></i>
+                                    Garantía de satisfacción Brixo</small>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light p-3 rounded-bottom-4">
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="fas fa-info-circle text-muted mt-1"></i>
+                                <small class="text-muted lh-sm">El precio final puede variar dependiendo de los
+                                    detalles específicos de tu proyecto. Solicita una cotización para obtener un precio exacto.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
