@@ -31,7 +31,7 @@ COPY src src
 # Compilar sin tests — reutiliza cache de Maven
 RUN --mount=type=cache,target=/root/.m2/repository \
     ./mvnw package -DskipTests -B -q \
- && mv target/*.jar target/app.jar
+    && mv target/*.jar target/app.jar
 
 # Extraer Spring Boot layered JAR para optimizar capas Docker
 RUN java -Djarmode=layertools -jar target/app.jar extract --destination /layers
@@ -42,8 +42,8 @@ RUN java -Djarmode=layertools -jar target/app.jar extract --destination /layers
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
 LABEL maintainer="Brixo Team" \
-      description="Brixo API — Spring Boot 3.3.5 / Java 21" \
-      version="1.0.0"
+    description="Brixo API — Spring Boot 3.3.5 / Java 21" \
+    version="1.0.0"
 
 WORKDIR /app
 
@@ -61,7 +61,7 @@ COPY --from=builder /layers/application/         ./
 
 # Directorios de escritura
 RUN mkdir -p uploads/profiles logs \
- && chown -R brixo:brixo /app
+    && chown -R brixo:brixo /app
 
 USER brixo
 

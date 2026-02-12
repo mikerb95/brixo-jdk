@@ -1,42 +1,123 @@
-# ═══════════════════════════════════════════════════
-# Brixo — Docker Compose (desarrollo)
-# ═══════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
+# Brixo — Docker Compose  (app + MySQL 8)
+# ═══════════════════════════════════════════════════════════════
+#
+# Uso:
+#   Desarrollo:  docker compose up -d
+#   Producción:  docker compose --profile prod up -d
+#   Build:       docker compose build --no-cache
+#   Logs:        docker compose logs -f app
+#   Detener:     docker compose down
+#   Borrar todo: docker compose down -v   (⚠ elimina datos)
+# ═══════════════════════════════════════════════════════════════
 
 services:
 
+  # ── MySQL 8.0 ──────────────────────────────────
   db:
     image: mysql:8.0
     container_name: brixo-mysql
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: brixo
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-brixo}
+      MYSQL_USER: ${DB_USERNAME:-brixo}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-brixo_secret}
       MYSQL_CHARACTER_SET_SERVER: utf8mb4
       MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
     ports:
-      - "3306:3306"
+      - "${DB_PORT_EXPOSED:-3306}:3306"
     volumes:
       - brixo-mysql-data:/var/lib/mysql
+    networks:
+      - brixo-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
+    command: >
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max-connections=200
+      --innodb-buffer-pool-size=256M
 
+  # ── Brixo API (Spring Boot) ───────────────────
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: brixo-api
+    restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "${APP_PORT:-8080}:8080"
     environment:
+      # ── Spring profile ──
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+
+      # ── Database ──
       DB_HOST: db
       DB_PORT: 3306
-      DB_NAME: brixo
-      DB_USERNAME: root
-      DB_PASSWORD: root
-      SPRING_PROFILES_ACTIVE: dev
+      DB_NAME: ${DB_NAME:-brixo}
+      DB_USERNAME: ${DB_USERNAME:-brixo}
+      DB_PASSWORD: ${DB_PASSWORD:-brixo_secret}
+
+      # ── JVM tunning ──
+      JAVA_TOOL_OPTIONS: >-
+        -XX:MaxRAMPercentage=75.0
+        -XX:+UseContainerSupport
+
+      # ── LLM / AI ──
+      LLM_PROVIDER: ${LLM_PROVIDER:-groq}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+
+      # ── AWS S3 (fotos de perfil) ──
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-brixo-images}
+
+      # ── Email ──
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+    volumes:
+      - brixo-uploads:/app/uploads
+      - brixo-logs:/app/logs
+    networks:
+      - brixo-net
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.5"
 
+# ── Volumes persistentes ─────────────────────────
 volumes:
   brixo-mysql-data:
+    driver: local
+  brixo-uploads:
+    driver: local
+  brixo-logs:
+    driver: local
+
+# ── Red interna ──────────────────────────────────
+networks:
+  brixo-net:
+    driver: bridge
