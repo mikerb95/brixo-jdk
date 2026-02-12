@@ -17,8 +17,8 @@ import java.util.List;
  * Controlador del catálogo público de servicios.
  *
  * Rutas:
- *   GET /servicios         — Listado con filtro por categoría
- *   GET /servicios/{id}    — Detalle de un servicio
+ * GET /servicios — Listado con filtro por categoría
+ * GET /servicios/{id} — Detalle de un servicio
  */
 @Controller
 @RequestMapping("/servicios")
@@ -28,7 +28,7 @@ public class ServiciosController {
     private final CategoriaRepository categoriaRepo;
 
     public ServiciosController(ServicioRepository servicioRepo,
-                               CategoriaRepository categoriaRepo) {
+            CategoriaRepository categoriaRepo) {
         this.servicioRepo = servicioRepo;
         this.categoriaRepo = categoriaRepo;
     }

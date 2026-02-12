@@ -18,10 +18,10 @@ import java.util.Optional;
  * Controlador del cotizador inteligente (IA).
  *
  * Rutas:
- *   GET  /cotizador           — Formulario
- *   POST /cotizador/generar   — Genera cotización (AJAX o form)
- *   POST /cotizador/confirmar — Confirma y guarda en BD
- *   GET  /cotizador/exito     — Vista de confirmación
+ * GET /cotizador — Formulario
+ * POST /cotizador/generar — Genera cotización (AJAX o form)
+ * POST /cotizador/confirmar — Confirma y guarda en BD
+ * GET /cotizador/exito — Vista de confirmación
  */
 @Controller
 @RequestMapping("/cotizador")
@@ -36,7 +36,8 @@ public class CotizadorController {
     /** GET /cotizador — Formulario principal. */
     @GetMapping
     public String index(@AuthenticationPrincipal BrixoUserPrincipal user, Model model) {
-        if (user != null) model.addAttribute("user", user);
+        if (user != null)
+            model.addAttribute("user", user);
         return "cotizador/index";
     }
 
@@ -44,7 +45,7 @@ public class CotizadorController {
     @PostMapping("/generar")
     @ResponseBody
     public ResponseEntity<?> generar(@RequestParam String descripcion,
-                                     HttpSession session) {
+            HttpSession session) {
         if (descripcion == null || descripcion.trim().length() < 10) {
             return ResponseEntity.badRequest()
                     .body(Map.of("ok", false, "error", "La descripción debe tener al menos 10 caracteres."));
@@ -60,8 +61,7 @@ public class CotizadorController {
         // Persist in session for confirm step
         session.setAttribute("ultima_cotizacion", Map.of(
                 "descripcion", descripcion.trim(),
-                "data", resultado.get()
-        ));
+                "data", resultado.get()));
 
         return ResponseEntity.ok(Map.of("ok", true, "data", resultado.get()));
     }
@@ -69,8 +69,8 @@ public class CotizadorController {
     /** POST /cotizador/confirmar — Confirmar cotización y guardar en BD. */
     @PostMapping("/confirmar")
     public String confirmar(@AuthenticationPrincipal BrixoUserPrincipal user,
-                            HttpSession session,
-                            RedirectAttributes flash) {
+            HttpSession session,
+            RedirectAttributes flash) {
         if (user == null) {
             flash.addFlashAttribute("error", "Debes iniciar sesión para confirmar una cotización.");
             return "redirect:/login";
@@ -91,8 +91,7 @@ public class CotizadorController {
         // Pre-fill solicitud from cotización
         session.setAttribute("prefill_solicitud", Map.of(
                 "titulo", data.servicioPrincipal(),
-                "descripcion", descripcion + "\n\n--- Desglose estimado (IA) ---\n" + buildDesglose(data)
-        ));
+                "descripcion", descripcion + "\n\n--- Desglose estimado (IA) ---\n" + buildDesglose(data)));
 
         session.removeAttribute("ultima_cotizacion");
         flash.addFlashAttribute("message", "Cotización confirmada. Tu solicitud ha sido creada.");
@@ -102,7 +101,8 @@ public class CotizadorController {
     /** GET /cotizador/exito — Pantalla de éxito post-confirmación. */
     @GetMapping("/exito")
     public String exito(@AuthenticationPrincipal BrixoUserPrincipal user, Model model) {
-        if (user != null) model.addAttribute("user", user);
+        if (user != null)
+            model.addAttribute("user", user);
         return "cotizador/exito";
     }
 
