@@ -25,17 +25,24 @@ import static org.mockito.Mockito.*;
 @DisplayName("PerfilService")
 class PerfilServiceTest {
 
-    @Mock private ClienteRepository clienteRepo;
-    @Mock private ContratistaRepository contratistaRepo;
-    @Mock private ContratistaServicioRepository csRepo;
-    @Mock private CertificacionRepository certRepo;
-    @Mock private ResenaRepository resenaRepo;
-    @Mock private StorageService storageService;
+    @Mock
+    private ClienteRepository clienteRepo;
+    @Mock
+    private ContratistaRepository contratistaRepo;
+    @Mock
+    private ContratistaServicioRepository csRepo;
+    @Mock
+    private CertificacionRepository certRepo;
+    @Mock
+    private ResenaRepository resenaRepo;
+    @Mock
+    private StorageService storageService;
 
-    @InjectMocks private PerfilService service;
+    @InjectMocks
+    private PerfilService service;
 
     // ═══════════════════════════════════════════
-    //  find methods
+    // find methods
     // ═══════════════════════════════════════════
 
     @Test
@@ -61,7 +68,7 @@ class PerfilServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  getPublicProfile
+    // getPublicProfile
     // ═══════════════════════════════════════════
 
     @Test
@@ -90,7 +97,7 @@ class PerfilServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  updateProfile
+    // updateProfile
     // ═══════════════════════════════════════════
 
     @Nested
@@ -108,8 +115,7 @@ class PerfilServiceTest {
 
             var req = new PerfilUpdateRequest(
                     "New Name", "3001112222", "Bogotá",
-                    null, null, null, null, null
-            );
+                    null, null, null, null, null);
             service.updateProfile(1L, UserRole.CLIENTE, req);
 
             assertThat(c.getNombre()).isEqualTo("New Name");
@@ -127,8 +133,7 @@ class PerfilServiceTest {
 
             var req = new PerfilUpdateRequest(
                     "Nuevo", "3109999", "Medellín",
-                    "6.2,-75.5", "10 años", "Desc nueva", "https://portafolio.com", null
-            );
+                    "6.2,-75.5", "10 años", "Desc nueva", "https://portafolio.com", null);
             service.updateProfile(5L, UserRole.CONTRATISTA, req);
 
             assertThat(ct.getNombre()).isEqualTo("Nuevo");
@@ -148,8 +153,7 @@ class PerfilServiceTest {
                     .thenReturn("https://s3.amazonaws.com/profiles/abc.jpg");
 
             var req = new PerfilUpdateRequest(
-                    null, null, null, null, null, null, null, null
-            );
+                    null, null, null, null, null, null, null, null);
             service.updateProfile(1L, UserRole.CLIENTE, req);
 
             assertThat(c.getFotoPerfil()).isEqualTo("https://s3.amazonaws.com/profiles/abc.jpg");
@@ -159,8 +163,7 @@ class PerfilServiceTest {
         @DisplayName("Lanza excepción para rol ADMIN")
         void throwsForAdminRole() {
             var req = new PerfilUpdateRequest(
-                    "X", null, null, null, null, null, null, null
-            );
+                    "X", null, null, null, null, null, null, null);
             assertThatThrownBy(() -> service.updateProfile(1L, UserRole.ADMIN, req))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("Rol no soportado");

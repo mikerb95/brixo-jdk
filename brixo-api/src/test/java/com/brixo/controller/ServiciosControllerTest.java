@@ -24,9 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("ServiciosController")
 class ServiciosControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @MockitoBean private ServicioRepository servicioRepo;
-    @MockitoBean private CategoriaRepository categoriaRepo;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockitoBean
+    private ServicioRepository servicioRepo;
+    @MockitoBean
+    private CategoriaRepository categoriaRepo;
 
     private Categoria buildCategoria(Long id, String nombre) {
         Categoria c = new Categoria();
@@ -45,7 +48,7 @@ class ServiciosControllerTest {
     }
 
     // ═══════════════════════════════════════════
-    //  GET /servicios
+    // GET /servicios
     // ═══════════════════════════════════════════
 
     @Test
@@ -56,8 +59,7 @@ class ServiciosControllerTest {
         when(categoriaRepo.findAll()).thenReturn(List.of(cat));
         when(servicioRepo.findAll()).thenReturn(List.of(
                 buildServicio(1L, "Reparación tuberías", cat),
-                buildServicio(2L, "Instalación sanitaria", cat)
-        ));
+                buildServicio(2L, "Instalación sanitaria", cat)));
 
         mockMvc.perform(get("/servicios"))
                 .andExpect(status().isOk())
@@ -73,8 +75,7 @@ class ServiciosControllerTest {
         Categoria cat = buildCategoria(1L, "Electricidad");
         when(categoriaRepo.findAll()).thenReturn(List.of(cat));
         when(servicioRepo.findByCategoriaId(1L)).thenReturn(List.of(
-                buildServicio(10L, "Cableado", cat)
-        ));
+                buildServicio(10L, "Cableado", cat)));
 
         mockMvc.perform(get("/servicios").param("categoriaId", "1"))
                 .andExpect(status().isOk())
@@ -84,7 +85,7 @@ class ServiciosControllerTest {
     }
 
     // ═══════════════════════════════════════════
-    //  GET /servicios/{id}
+    // GET /servicios/{id}
     // ═══════════════════════════════════════════
 
     @Test
@@ -96,8 +97,7 @@ class ServiciosControllerTest {
 
         when(servicioRepo.findByIdWithCategoria(5L)).thenReturn(s);
         when(servicioRepo.findByCategoriaId(1L)).thenReturn(List.of(
-                s, buildServicio(6L, "Instalación", cat)
-        ));
+                s, buildServicio(6L, "Instalación", cat)));
 
         mockMvc.perform(get("/servicios/5"))
                 .andExpect(status().isOk())

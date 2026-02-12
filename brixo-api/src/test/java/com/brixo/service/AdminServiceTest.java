@@ -30,15 +30,20 @@ import static org.mockito.Mockito.*;
 @DisplayName("AdminService")
 class AdminServiceTest {
 
-    @Mock private ClienteRepository clienteRepo;
-    @Mock private ContratistaRepository contratistaRepo;
-    @Mock private AdminRepository adminRepo;
-    @Mock private PasswordEncoder passwordEncoder;
+    @Mock
+    private ClienteRepository clienteRepo;
+    @Mock
+    private ContratistaRepository contratistaRepo;
+    @Mock
+    private AdminRepository adminRepo;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
-    @InjectMocks private AdminService service;
+    @InjectMocks
+    private AdminService service;
 
     // ═══════════════════════════════════════════
-    //  getStats
+    // getStats
     // ═══════════════════════════════════════════
 
     @Test
@@ -56,7 +61,7 @@ class AdminServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  getAllUsers
+    // getAllUsers
     // ═══════════════════════════════════════════
 
     @Test
@@ -78,7 +83,7 @@ class AdminServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  crearUsuario
+    // crearUsuario
     // ═══════════════════════════════════════════
 
     @Nested
@@ -156,7 +161,7 @@ class AdminServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  eliminarUsuario
+    // eliminarUsuario
     // ═══════════════════════════════════════════
 
     @Nested

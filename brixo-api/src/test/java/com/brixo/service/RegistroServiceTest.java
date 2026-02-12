@@ -27,13 +27,19 @@ import static org.mockito.Mockito.*;
 @DisplayName("RegistroService")
 class RegistroServiceTest {
 
-    @Mock private ClienteRepository clienteRepo;
-    @Mock private ContratistaRepository contratistaRepo;
-    @Mock private AdminRepository adminRepo;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private StorageService storageService;
+    @Mock
+    private ClienteRepository clienteRepo;
+    @Mock
+    private ContratistaRepository contratistaRepo;
+    @Mock
+    private AdminRepository adminRepo;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private StorageService storageService;
 
-    @InjectMocks private RegistroService service;
+    @InjectMocks
+    private RegistroService service;
 
     // ── Helper: valid base request ──
 
@@ -42,8 +48,7 @@ class RegistroServiceTest {
                 "Juan Pérez", "juan@test.com",
                 "Password1!", "Password1!",
                 "cliente", "3001234567", "Bogotá",
-                null, null, null, null
-        );
+                null, null, null, null);
     }
 
     private RegisterRequest validContratistaRequest() {
@@ -51,12 +56,11 @@ class RegistroServiceTest {
                 "Ana López", "ana@test.com",
                 "Secure9#x", "Secure9#x",
                 "contratista", "3109876543", "Medellín",
-                "6.2442,-75.5812", "5 años", "Experta en electricidad", null
-        );
+                "6.2442,-75.5812", "5 años", "Experta en electricidad", null);
     }
 
     // ═══════════════════════════════════════════
-    //  Password validation
+    // Password validation
     // ═══════════════════════════════════════════
 
     @Nested
@@ -119,7 +123,7 @@ class RegistroServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  Email uniqueness
+    // Email uniqueness
     // ═══════════════════════════════════════════
 
     @Test
@@ -155,7 +159,7 @@ class RegistroServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  Successful registration
+    // Successful registration
     // ═══════════════════════════════════════════
 
     @Test

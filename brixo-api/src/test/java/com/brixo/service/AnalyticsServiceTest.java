@@ -27,13 +27,16 @@ import static org.mockito.Mockito.when;
 @DisplayName("AnalyticsService")
 class AnalyticsServiceTest {
 
-    @Mock private AnalyticsEventRepository eventRepository;
-    @Spy  private ObjectMapper mapper = new ObjectMapper();
+    @Mock
+    private AnalyticsEventRepository eventRepository;
+    @Spy
+    private ObjectMapper mapper = new ObjectMapper();
 
-    @InjectMocks private AnalyticsService service;
+    @InjectMocks
+    private AnalyticsService service;
 
     // ═══════════════════════════════════════════
-    //  track()
+    // track()
     // ═══════════════════════════════════════════
 
     @Nested
@@ -48,8 +51,7 @@ class AnalyticsServiceTest {
                     "https://brixo.com.mx/mapa", "/mapa",
                     null, "Mapa", "1920x1080", "1440x900",
                     "desktop", "es-CO", "Chrome", "Linux",
-                    null
-            );
+                    null);
 
             service.track(request, "192.168.1.100");
 
@@ -70,8 +72,7 @@ class AnalyticsServiceTest {
         void defaultsToPageview() {
             var request = new AnalyticsEventRequest(
                     "v", "s", null, "url", "/", null, null,
-                    null, null, null, null, null, null, null
-            );
+                    null, null, null, null, null, null, null);
 
             service.track(request, "10.0.0.1");
 
@@ -85,8 +86,7 @@ class AnalyticsServiceTest {
         void anonymizesNullIp() {
             var request = new AnalyticsEventRequest(
                     "v", "s", "click", "url", "/", null, null,
-                    null, null, null, null, null, null, null
-            );
+                    null, null, null, null, null, null, null);
 
             service.track(request, null);
 
@@ -100,8 +100,7 @@ class AnalyticsServiceTest {
         void sanitizesPath() {
             var request = new AnalyticsEventRequest(
                     "v", "s", "pageview", "url", "/mapa?lat=4.6&lon=-74",
-                    null, null, null, null, null, null, null, null, null
-            );
+                    null, null, null, null, null, null, null, null, null);
 
             service.track(request, "1.2.3.4");
 
@@ -116,8 +115,7 @@ class AnalyticsServiceTest {
             var request = new AnalyticsEventRequest(
                     "v", "s", "click", "url", "/",
                     null, null, null, null, null, null, null, null,
-                    Map.of("button", "cta-signup")
-            );
+                    Map.of("button", "cta-signup"));
 
             service.track(request, "1.1.1.1");
 
@@ -128,7 +126,7 @@ class AnalyticsServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  getDashboardStats()
+    // getDashboardStats()
     // ═══════════════════════════════════════════
 
     @Test

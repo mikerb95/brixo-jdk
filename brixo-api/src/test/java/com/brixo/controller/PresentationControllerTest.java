@@ -21,11 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("PresentationController")
 class PresentationControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // ═══════════════════════════════════════════
-    //  View routes (all public)
+    // View routes (all public)
     // ═══════════════════════════════════════════
 
     @Nested
@@ -80,7 +82,7 @@ class PresentationControllerTest {
     }
 
     // ═══════════════════════════════════════════
-    //  Slide API
+    // Slide API
     // ═══════════════════════════════════════════
 
     @Nested
@@ -99,8 +101,8 @@ class PresentationControllerTest {
         @DisplayName("POST /api/slide cambia el slide y lo retorna")
         void setSlide() throws Exception {
             mockMvc.perform(post("/api/slide")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(Map.of("slide", 5))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(Map.of("slide", 5))))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.slide", is(5)));
 
@@ -113,21 +115,21 @@ class PresentationControllerTest {
         @DisplayName("POST /api/slide clampea al rango [1, totalSlides]")
         void setSlide_clampsRange() throws Exception {
             mockMvc.perform(post("/api/slide")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(Map.of("slide", 99))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(Map.of("slide", 99))))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.slide", is(11)));
 
             mockMvc.perform(post("/api/slide")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(Map.of("slide", 0))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(Map.of("slide", 0))))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.slide", is(1)));
         }
     }
 
     // ═══════════════════════════════════════════
-    //  Demo API
+    // Demo API
     // ═══════════════════════════════════════════
 
     @Nested
@@ -147,9 +149,9 @@ class PresentationControllerTest {
         @DisplayName("POST /api/demo activa demo con URL")
         void setDemo_activates() throws Exception {
             mockMvc.perform(post("/api/demo")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(
-                                    Map.of("url", "https://brixo.com.mx", "active", true))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(
+                            Map.of("url", "https://brixo.com.mx", "active", true))))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.active", is(true)))
                     .andExpect(jsonPath("$.url", is("https://brixo.com.mx")));
@@ -166,9 +168,9 @@ class PresentationControllerTest {
 
             // Then deactivate
             mockMvc.perform(post("/api/demo")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(
-                                    Map.of("url", "", "active", false))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(
+                            Map.of("url", "", "active", false))))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.active", is(false)));
         }

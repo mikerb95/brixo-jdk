@@ -27,17 +27,24 @@ import static org.mockito.Mockito.*;
 @DisplayName("PasswordResetService")
 class PasswordResetServiceTest {
 
-    @Mock private PasswordResetTokenRepository tokenRepo;
-    @Mock private ClienteRepository clienteRepo;
-    @Mock private ContratistaRepository contratistaRepo;
-    @Mock private AdminRepository adminRepo;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private EmailService emailService;
+    @Mock
+    private PasswordResetTokenRepository tokenRepo;
+    @Mock
+    private ClienteRepository clienteRepo;
+    @Mock
+    private ContratistaRepository contratistaRepo;
+    @Mock
+    private AdminRepository adminRepo;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private EmailService emailService;
 
-    @InjectMocks private PasswordResetService service;
+    @InjectMocks
+    private PasswordResetService service;
 
     // ═══════════════════════════════════════════
-    //  sendResetLink
+    // sendResetLink
     // ═══════════════════════════════════════════
 
     @Nested
@@ -92,7 +99,7 @@ class PasswordResetServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  validateToken
+    // validateToken
     // ═══════════════════════════════════════════
 
     @Nested
@@ -140,7 +147,7 @@ class PasswordResetServiceTest {
     }
 
     // ═══════════════════════════════════════════
-    //  resetPassword
+    // resetPassword
     // ═══════════════════════════════════════════
 
     @Nested

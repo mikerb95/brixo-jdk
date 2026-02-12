@@ -26,11 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("CotizadorController")
 class CotizadorControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @MockitoBean private CotizadorService cotizadorService;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockitoBean
+    private CotizadorService cotizadorService;
 
     // ═══════════════════════════════════════════
-    //  GET /cotizador
+    // GET /cotizador
     // ═══════════════════════════════════════════
 
     @Test
@@ -52,7 +54,7 @@ class CotizadorControllerTest {
     }
 
     // ═══════════════════════════════════════════
-    //  POST /cotizador/generar
+    // POST /cotizador/generar
     // ═══════════════════════════════════════════
 
     @Nested
@@ -64,8 +66,8 @@ class CotizadorControllerTest {
         @WithMockUser
         void rejectsShortDescription() throws Exception {
             mockMvc.perform(post("/cotizador/generar")
-                            .with(csrf())
-                            .param("descripcion", "corto"))
+                    .with(csrf())
+                    .param("descripcion", "corto"))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.ok").value(false))
                     .andExpect(jsonPath("$.error").exists());
@@ -80,8 +82,8 @@ class CotizadorControllerTest {
             when(cotizadorService.generar(anyString())).thenReturn(Optional.of(result));
 
             mockMvc.perform(post("/cotizador/generar")
-                            .with(csrf())
-                            .param("descripcion", "Reparar tubería de agua en la cocina"))
+                    .with(csrf())
+                    .param("descripcion", "Reparar tubería de agua en la cocina"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.ok").value(true))
                     .andExpect(jsonPath("$.data.servicioPrincipal").value("Plomería"));
@@ -94,8 +96,8 @@ class CotizadorControllerTest {
             when(cotizadorService.generar(anyString())).thenReturn(Optional.empty());
 
             mockMvc.perform(post("/cotizador/generar")
-                            .with(csrf())
-                            .param("descripcion", "Instalación eléctrica completa en oficina"))
+                    .with(csrf())
+                    .param("descripcion", "Instalación eléctrica completa en oficina"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.ok").value(false))
                     .andExpect(jsonPath("$.error").exists());
@@ -103,7 +105,7 @@ class CotizadorControllerTest {
     }
 
     // ═══════════════════════════════════════════
-    //  GET /cotizador/exito
+    // GET /cotizador/exito
     // ═══════════════════════════════════════════
 
     @Test
