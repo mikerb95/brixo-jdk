@@ -2,7 +2,7 @@
  * Cookie Consent Manager
  * Gestiona el banner de consentimiento de cookies y las preferencias del usuario
  */
-(function() {
+(function () {
     'use strict';
 
     const COOKIE_CONSENT_KEY = 'brixo_cookie_consent';

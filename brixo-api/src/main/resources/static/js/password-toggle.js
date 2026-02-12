@@ -2,7 +2,7 @@
  * Password Toggle Utility
  * Auto-wraps all password inputs and adds eye icon toggle
  */
-(function() {
+(function () {
     'use strict';
 
     function initPasswordToggles() {
@@ -27,7 +27,7 @@
             toggleBtn.setAttribute('aria-label', 'Mostrar contraseña');
             toggleBtn.setAttribute('tabindex', '-1');
 
-            toggleBtn.addEventListener('click', function(e) {
+            toggleBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 const icon = this.querySelector('i');
                 if (input.type === 'password') {
@@ -54,7 +54,7 @@
     }
 
     // Re-initialize when modals are shown (for dynamically loaded content)
-    document.addEventListener('shown.bs.modal', function() {
+    document.addEventListener('shown.bs.modal', function () {
         setTimeout(initPasswordToggles, 50);
     });
 
