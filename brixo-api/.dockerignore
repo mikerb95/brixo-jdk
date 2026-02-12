@@ -1,0 +1,49 @@
+# ═══════════════════════════════════════════════════
+# Brixo API — Docker ignore
+# ═══════════════════════════════════════════════════
+
+# Build artifacts
+target/
+*.jar
+*.war
+*.class
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+
+# Git
+.git/
+.gitignore
+
+# Docker (evitar recursión)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Logs & temporales
+logs/
+*.log
+writable/
+
+# CI/CD
+.github/
+
+# Docs
+*.md
+docs/
+LICENSE
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*

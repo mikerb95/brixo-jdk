@@ -1,0 +1,67 @@
+## ──────────────────────────────────────────────
+## Production profile overrides
+## ──────────────────────────────────────────────
+
+spring:
+  # ── Thymeleaf: habilitar cache en producción ──
+  thymeleaf:
+    cache: true
+
+  # ── JPA ──
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        generate_statistics: false
+
+  # ── Flyway ──
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+  # ── DevTools deshabilitados ──
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+
+# ── Server tuning ──
+server:
+  error:
+    include-stacktrace: never
+    include-message: never
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/json,application/javascript
+    min-response-size: 1024
+
+# ── Actuator: solo health en producción ──
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+# ── Logging ──
+logging:
+  level:
+    root: WARN
+    com.brixo: INFO
+    org.hibernate.SQL: WARN
+    org.springframework.security: WARN
+  file:
+    name: logs/brixo.log
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 30
+      total-size-cap: 500MB
