@@ -1,0 +1,237 @@
+# ═══════════════════════════════════════════════════════════════
+# Brixo API — CI/CD Pipeline  (GitHub Actions)
+#
+# Stages:
+#   1. test     → Compile + unit tests + integration tests
+#   2. build    → Multi-stage Docker image
+#   3. push     → Push image to GitHub Container Registry
+#   4. deploy   → Deploy to production (manual trigger)
+#
+# Triggers:
+#   - Push to main/develop  (brixo-api/**)
+#   - Pull requests to main (brixo-api/**)
+#   - Manual dispatch
+# ═══════════════════════════════════════════════════════════════
+
+name: Brixo API — CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'brixo-api/**'
+      - '.github/workflows/brixo-api-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'brixo-api/**'
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: '21'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/brixo-api
+
+# ── Concurrency: cancelar jobs anteriores en la misma rama ──
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ══════════════════════════════════════════════
+  # Stage 1 — Test
+  # ══════════════════════════════════════════════
+  test:
+    name: 🧪 Test (Java ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: brixo-api
+
+    strategy:
+      matrix:
+        java: ['21']
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: brixo_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+          --health-start-period=30s
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: temurin
+          cache: maven
+
+      - name: 📦 Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('brixo-api/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: 🔍 Verify & Test
+        run: ./mvnw verify -B -q
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_NAME: brixo_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          SPRING_PROFILES_ACTIVE: test
+
+      - name: 📊 Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-java-${{ matrix.java }}
+          path: brixo-api/target/surefire-reports/
+          retention-days: 7
+
+  # ══════════════════════════════════════════════
+  # Stage 2 — Build Docker Image
+  # ══════════════════════════════════════════════
+  build:
+    name: 🐳 Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+      image_digest: ${{ steps.build-push.outputs.digest }}
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑 Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🏗️ Build & Push
+        id: build-push
+        uses: docker/build-push-action@v5
+        with:
+          context: brixo-api
+          file: brixo-api/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: 📋 Image summary
+        run: |
+          echo "### 🐳 Docker Image" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image** | \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Tags** | \`${{ steps.meta.outputs.version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Digest** | \`${{ steps.build-push.outputs.digest }}\` |" >> $GITHUB_STEP_SUMMARY
+
+  # ══════════════════════════════════════════════
+  # Stage 3 — Deploy (manual gate)
+  # ══════════════════════════════════════════════
+  deploy:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    environment:
+      name: production
+      url: ${{ vars.APP_URL }}
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+
+            echo "══════════════════════════════════════"
+            echo "  Deploying Brixo API — $(date)"
+            echo "══════════════════════════════════════"
+
+            cd ${{ vars.DEPLOY_PATH || '/opt/brixo' }}
+
+            # Pull latest image
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+            # Recreate containers with new image
+            docker compose down app
+            docker compose up -d app
+
+            # Wait for health
+            echo "Waiting for health check..."
+            for i in $(seq 1 30); do
+              if curl -sf http://localhost:8080/actuator/health > /dev/null 2>&1; then
+                echo "✅ App is healthy!"
+                break
+              fi
+              echo "  Attempt $i/30..."
+              sleep 5
+            done
+
+            # Prune old images
+            docker image prune -f
+
+            echo "══════════════════════════════════════"
+            echo "  Deploy complete!"
+            echo "══════════════════════════════════════"
+
+      - name: 📋 Deploy summary
+        run: |
+          echo "### 🚀 Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Environment** | production |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image Tag** | \`${{ needs.build.outputs.image_tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY

@@ -79,6 +79,24 @@ spring:
     time-zone: America/Bogota
     date-format: yyyy-MM-dd HH:mm:ss
 
+# ── Actuator ──
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+
 # ── AWS S3 ──
 aws:
   s3:

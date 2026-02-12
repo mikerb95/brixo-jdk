@@ -34,6 +34,10 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/presentation/**", "/favicon.ico")
                         .permitAll()
 
+                        // ── Actuator health (Docker / LB health checks) ──
+                        .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info")
+                        .permitAll()
+
                         // ── Rutas públicas ──
                         .requestMatchers(
                                 "/", "/login", "/register",
