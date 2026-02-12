@@ -1,135 +1,154 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/main}">
+
 <head>
     <title>Cotización Confirmada</title>
 </head>
+
 <body>
-<main layout:fragment="content" class="container py-5" style="max-width: 720px;">
+    <main layout:fragment="content" class="container py-5" style="max-width: 720px;">
 
-    <!-- Éxito -->
-    <div class="text-center mb-5">
-        <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 rounded-circle mb-4"
-             style="width: 100px; height: 100px;">
-            <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
-        </div>
-        <h1 class="display-6 fw-bold mb-2">¡Cotización Confirmada!</h1>
-        <p class="text-muted fs-5">Tu solicitud ha sido registrada exitosamente.</p>
-        <span th:if="${cotizacion != null and cotizacion.id != null}"
-              class="badge bg-primary rounded-pill px-3 py-2 fs-6"
-              th:text="'Folio #' + ${cotizacion.id}">Folio #1</span>
-    </div>
-
-    <!-- Resumen -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
-        <div class="card-header bg-primary text-white py-3 px-4 d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 fw-bold"><i class="fas fa-file-invoice me-2"></i>Resumen de tu Cotización</h5>
-            <span class="badge rounded-pill px-3 py-2"
-                  th:classappend="${cotizacion.complejidad == 'bajo'} ? 'bg-success' : (${cotizacion.complejidad == 'alto'} ? 'bg-danger' : 'bg-warning text-dark')"
-                  th:text="${#strings.capitalize(cotizacion.complejidad ?: 'medio')}">Medio</span>
-        </div>
-        <div class="card-body p-4">
-
-            <!-- Servicio principal -->
-            <div class="mb-4 p-3 bg-light rounded-3">
-                <small class="text-muted text-uppercase fw-bold">Servicio Principal</small>
-                <h4 class="fw-bold mb-0 mt-1" th:text="${cotizacion.servicioPrincipal}">Servicio</h4>
+        <!-- Éxito -->
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 rounded-circle mb-4"
+                style="width: 100px; height: 100px;">
+                <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
             </div>
+            <h1 class="display-6 fw-bold mb-2">¡Cotización Confirmada!</h1>
+            <p class="text-muted fs-5">Tu solicitud ha sido registrada exitosamente.</p>
+            <span th:if="${cotizacion != null and cotizacion.id != null}"
+                class="badge bg-primary rounded-pill px-3 py-2 fs-6" th:text="'Folio #' + ${cotizacion.id}">Folio
+                #1</span>
+        </div>
 
-            <!-- Descripción original -->
-            <div th:if="${cotizacion.descripcion != null and !cotizacion.descripcion.isBlank()}"
-                 class="mb-4 p-3 border rounded-3">
-                <small class="text-muted text-uppercase fw-bold">Tu solicitud</small>
-                <p class="mb-0 mt-1" th:text="${cotizacion.descripcion}">Descripción</p>
+        <!-- Resumen -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="card-header bg-primary text-white py-3 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="fas fa-file-invoice me-2"></i>Resumen de tu Cotización</h5>
+                <span class="badge rounded-pill px-3 py-2"
+                    th:classappend="${cotizacion.complejidad == 'bajo'} ? 'bg-success' : (${cotizacion.complejidad == 'alto'} ? 'bg-danger' : 'bg-warning text-dark')"
+                    th:text="${#strings.capitalize(cotizacion.complejidad ?: 'medio')}">Medio</span>
             </div>
+            <div class="card-body p-4">
 
-            <!-- Materiales -->
-            <div th:if="${cotizacion.materiales != null and !cotizacion.materiales.isEmpty()}">
-                <h6 class="fw-bold text-uppercase text-muted mb-3"><i class="fas fa-tools me-2"></i>Materiales</h6>
-                <div class="table-responsive mb-4">
-                    <table class="table table-borderless mb-0">
-                        <thead>
-                        <tr><th>Material</th><th class="text-end">Cantidad</th></tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="mat : ${cotizacion.materiales}">
-                            <td><i class="fas fa-box text-muted me-2"></i><span th:text="${mat.nombre}">Material</span></td>
-                            <td class="text-end fw-semibold" th:text="${mat.cantidadEstimada}">1</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <!-- Servicio principal -->
+                <div class="mb-4 p-3 bg-light rounded-3">
+                    <small class="text-muted text-uppercase fw-bold">Servicio Principal</small>
+                    <h4 class="fw-bold mb-0 mt-1" th:text="${cotizacion.servicioPrincipal}">Servicio</h4>
+                </div>
+
+                <!-- Descripción original -->
+                <div th:if="${cotizacion.descripcion != null and !cotizacion.descripcion.isBlank()}"
+                    class="mb-4 p-3 border rounded-3">
+                    <small class="text-muted text-uppercase fw-bold">Tu solicitud</small>
+                    <p class="mb-0 mt-1" th:text="${cotizacion.descripcion}">Descripción</p>
+                </div>
+
+                <!-- Materiales -->
+                <div th:if="${cotizacion.materiales != null and !cotizacion.materiales.isEmpty()}">
+                    <h6 class="fw-bold text-uppercase text-muted mb-3"><i class="fas fa-tools me-2"></i>Materiales</h6>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th class="text-end">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="mat : ${cotizacion.materiales}">
+                                    <td><i class="fas fa-box text-muted me-2"></i><span
+                                            th:text="${mat.nombre}">Material</span></td>
+                                    <td class="text-end fw-semibold" th:text="${mat.cantidadEstimada}">1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Personal -->
+                <div th:if="${cotizacion.personal != null and !cotizacion.personal.isEmpty()}">
+                    <h6 class="fw-bold text-uppercase text-muted mb-3"><i class="fas fa-users me-2"></i>Personal</h6>
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Rol</th>
+                                    <th class="text-end">Horas Est.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="per : ${cotizacion.personal}">
+                                    <td><i class="fas fa-hard-hat text-muted me-2"></i><span
+                                            th:text="${per.rol}">Rol</span></td>
+                                    <td class="text-end fw-semibold" th:text="${per.horasEstimadas} + ' hrs'">8 hrs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Personal -->
-            <div th:if="${cotizacion.personal != null and !cotizacion.personal.isEmpty()}">
-                <h6 class="fw-bold text-uppercase text-muted mb-3"><i class="fas fa-users me-2"></i>Personal</h6>
-                <div class="table-responsive">
-                    <table class="table table-borderless mb-0">
-                        <thead>
-                        <tr><th>Rol</th><th class="text-end">Horas Est.</th></tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="per : ${cotizacion.personal}">
-                            <td><i class="fas fa-hard-hat text-muted me-2"></i><span th:text="${per.rol}">Rol</span></td>
-                            <td class="text-end fw-semibold" th:text="${per.horasEstimadas} + ' hrs'">8 hrs</td>
-                        </tr>
-                        </tbody>
-                    </table>
+        <!-- Solicitud creada -->
+        <div th:if="${cotizacion.idSolicitud != null}"
+            class="alert alert-success border-0 shadow-sm rounded-4 d-flex align-items-center mb-4" role="alert">
+            <i class="fas fa-clipboard-check fs-4 me-3"></i>
+            <div>
+                <strong th:text="'Solicitud #' + ${cotizacion.idSolicitud} + ' creada automáticamente.'">Solicitud
+                    creada</strong>
+                <span class="d-block small text-muted">Puedes verla y editarla desde tu panel en <strong>Mis
+                        Solicitudes</strong>.</span>
+            </div>
+        </div>
+
+        <!-- Próximos pasos -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="fas fa-route text-primary me-2"></i>¿Qué sigue?</h5>
+            <div class="d-flex align-items-start mb-3">
+                <span class="badge bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px; flex-shrink: 0;">1</span>
+                <div>
+                    <strong>Tu solicitud ya está publicada</strong>
+                    <p class="text-muted mb-0 small">Fue agregada a <strong>Mis Solicitudes</strong> y al tablón de
+                        tareas para contratistas.</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-start mb-3">
+                <span class="badge bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px; flex-shrink: 0;">2</span>
+                <div>
+                    <strong>Contratistas podrán contactarte</strong>
+                    <p class="text-muted mb-0 small">Profesionales verificados en tu zona verán tu solicitud y te
+                        escribirán.</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-start">
+                <span class="badge bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px; flex-shrink: 0;">3</span>
+                <div>
+                    <strong>Acepta y agenda</strong>
+                    <p class="text-muted mb-0 small">Cuando elijas un contratista, la solicitud se convertirá en un
+                        contrato formal.</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Solicitud creada -->
-    <div th:if="${cotizacion.idSolicitud != null}" class="alert alert-success border-0 shadow-sm rounded-4 d-flex align-items-center mb-4" role="alert">
-        <i class="fas fa-clipboard-check fs-4 me-3"></i>
-        <div>
-            <strong th:text="'Solicitud #' + ${cotizacion.idSolicitud} + ' creada automáticamente.'">Solicitud creada</strong>
-            <span class="d-block small text-muted">Puedes verla y editarla desde tu panel en <strong>Mis Solicitudes</strong>.</span>
+        <!-- Acciones -->
+        <div class="d-flex flex-column flex-sm-row gap-3 flex-wrap">
+            <a th:href="@{/panel}" class="btn btn-success btn-lg rounded-pill flex-fill text-center">
+                <i class="fas fa-clipboard-list me-2"></i>Ver Mis Solicitudes
+            </a>
+            <a th:href="@{/cotizador}" class="btn btn-primary btn-lg rounded-pill flex-fill text-center">
+                <i class="fas fa-plus me-2"></i>Nueva Cotización
+            </a>
+            <a th:href="@{/mapa}" class="btn btn-outline-dark btn-lg rounded-pill flex-fill text-center">
+                <i class="fas fa-map-marked-alt me-2"></i>Explorar Mapa
+            </a>
         </div>
-    </div>
 
-    <!-- Próximos pasos -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-        <h5 class="fw-bold mb-3"><i class="fas fa-route text-primary me-2"></i>¿Qué sigue?</h5>
-        <div class="d-flex align-items-start mb-3">
-            <span class="badge bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; flex-shrink: 0;">1</span>
-            <div>
-                <strong>Tu solicitud ya está publicada</strong>
-                <p class="text-muted mb-0 small">Fue agregada a <strong>Mis Solicitudes</strong> y al tablón de tareas para contratistas.</p>
-            </div>
-        </div>
-        <div class="d-flex align-items-start mb-3">
-            <span class="badge bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; flex-shrink: 0;">2</span>
-            <div>
-                <strong>Contratistas podrán contactarte</strong>
-                <p class="text-muted mb-0 small">Profesionales verificados en tu zona verán tu solicitud y te escribirán.</p>
-            </div>
-        </div>
-        <div class="d-flex align-items-start">
-            <span class="badge bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; flex-shrink: 0;">3</span>
-            <div>
-                <strong>Acepta y agenda</strong>
-                <p class="text-muted mb-0 small">Cuando elijas un contratista, la solicitud se convertirá en un contrato formal.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Acciones -->
-    <div class="d-flex flex-column flex-sm-row gap-3 flex-wrap">
-        <a th:href="@{/panel}" class="btn btn-success btn-lg rounded-pill flex-fill text-center">
-            <i class="fas fa-clipboard-list me-2"></i>Ver Mis Solicitudes
-        </a>
-        <a th:href="@{/cotizador}" class="btn btn-primary btn-lg rounded-pill flex-fill text-center">
-            <i class="fas fa-plus me-2"></i>Nueva Cotización
-        </a>
-        <a th:href="@{/mapa}" class="btn btn-outline-dark btn-lg rounded-pill flex-fill text-center">
-            <i class="fas fa-map-marked-alt me-2"></i>Explorar Mapa
-        </a>
-    </div>
-
-</main>
+    </main>
 </body>
+
 </html>
