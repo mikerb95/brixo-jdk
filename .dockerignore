@@ -1,0 +1,50 @@
+# ═══════════════════════════════════════════════════
+# Brixo — Docker ignore (root context)
+# ═══════════════════════════════════════════════════
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+
+# Documentation
+docs/
+*.md
+LICENSE
+
+# Build artifacts (will be built inside container)
+brixo-api/target/
+brixo-api/*.jar
+brixo-api/*.war
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+
+# Static assets (not needed for backend build)
+public/
+
+# Logs & temporary files
+brixo-api/logs/
+*.log
+*.tmp
+
+# Docker files (avoid recursion)
+docker-compose.yml
+brixo-api/docker-compose.yml
+brixo-api/Dockerfile
+brixo-api/.dockerignore
+
+# Legacy files
+builds
+Dockerfile.old
+env

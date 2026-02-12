@@ -1,50 +1,81 @@
-FROM php:8.2-apache
+# ═══════════════════════════════════════════════════════════════
+# Brixo API — Multi-stage Docker build for Render deployment
+# Stack:  Spring Boot 3.3.5 / Java 21 / Maven
+# Context: Build from repository root, sources in brixo-api/
+# ═══════════════════════════════════════════════════════════════
 
-# 1. Instalar dependencias del sistema necesarias
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    libicu-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# ────────────────────────────────────────────────
+# Stage 1 — Dependency cache
+# ────────────────────────────────────────────────
+FROM eclipse-temurin:21-jdk-alpine AS deps
 
-# 2. Instalar extensiones de PHP requeridas por CodeIgniter 4
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl mysqli zip
+WORKDIR /app
 
-# 3. Habilitar mod_rewrite de Apache (necesario para las rutas de CI4)
-RUN a2enmod rewrite
+# Copy only pom + wrapper → cached layer while deps don't change
+COPY brixo-api/pom.xml .
+COPY brixo-api/.mvn .mvn
+COPY brixo-api/mvnw .
+RUN chmod +x mvnw
 
-# 4. Configurar DocumentRoot para apuntar a la carpeta public
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+# Resolve dependencies offline (Maven cache in layer)
+RUN --mount=type=cache,target=/root/.m2/repository \
+    ./mvnw dependency:go-offline -B -q
 
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
-    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+# ────────────────────────────────────────────────
+# Stage 2 — Build
+# ────────────────────────────────────────────────
+FROM deps AS builder
 
-# 5. Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY brixo-api/src src
 
-# 6. Establecer directorio de trabajo
-WORKDIR /var/www/html
+# Build without tests — reuses Maven cache
+RUN --mount=type=cache,target=/root/.m2/repository \
+    ./mvnw package -DskipTests -B -q \
+    && mv target/*.jar target/app.jar
 
-# 7. Copiar archivos del proyecto (respetando .dockerignore)
-COPY . /var/www/html
+# Extract Spring Boot layered JAR to optimize Docker layers
+RUN java -Djarmode=layertools -jar target/app.jar extract --destination /layers
 
-# 8. Instalar dependencias de PHP (producción)
-# Instala dependencias en producción (no interactivo, prefer dist)
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-progress
+# ────────────────────────────────────────────────
+# Stage 3 — Runtime (JRE only, ~200 MB)
+# ────────────────────────────────────────────────
+FROM eclipse-temurin:21-jre-alpine AS runtime
 
-# 9. Ajustar permisos para la carpeta writable
-# Apache corre como www-data, necesita escribir en writable
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/writable
+LABEL maintainer="Brixo Team" \
+      description="Brixo API — Spring Boot 3.3.5 / Java 21" \
+      version="1.0.0"
 
-# 10. Exponer puerto 80 (Render usa este puerto por defecto para detectar la app)
-EXPOSE 80
+WORKDIR /app
 
-# Config para proxies (Render) opcional: permitir encabezados X-Forwarded-Proto
-# Apache ya suele propagar esto; la app maneja HTTPS detrás de proxy en public/index.php
+# Install curl for healthchecks
+RUN apk add --no-cache curl
+
+# Non-root user
+RUN addgroup -S brixo && adduser -S brixo -G brixo
+
+# Copy JAR layers (order = less → more volatile → better cache)
+COPY --from=builder /layers/dependencies/        ./
+COPY --from=builder /layers/spring-boot-loader/  ./
+COPY --from=builder /layers/snapshot-dependencies/ ./
+COPY --from=builder /layers/application/         ./
+
+# Writable directories
+RUN mkdir -p uploads/profiles logs \
+    && chown -R brixo:brixo /app
+
+USER brixo
+
+EXPOSE 8080
+
+# Integrated health-check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# JVM tuning: ZGC generational, container-aware, Virtual Threads
+ENTRYPOINT ["java", \
+    "-XX:+UseZGC", \
+    "-XX:+ZGenerational", \
+    "-XX:MaxRAMPercentage=75.0", \
+    "-XX:+UseContainerSupport", \
+    "-Djava.security.egd=file:/dev/./urandom", \
+    "org.springframework.boot.loader.launch.JarLauncher"]
