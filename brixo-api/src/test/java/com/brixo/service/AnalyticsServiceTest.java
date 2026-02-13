@@ -133,7 +133,7 @@ class AnalyticsServiceTest {
     @DisplayName("getDashboardStats() retorna estadísticas del período")
     void getDashboardStats_returnsAllMetrics() {
         when(eventRepository.countByCreatedAtAfter(any(LocalDateTime.class))).thenReturn(1200L);
-        when(eventRepository.findDistinctVisitorsSince(any())).thenReturn(350L);
+        when(eventRepository.findDistinctVisitorsSince(any())).thenReturn(List.of("ip1", "ip2", "ip3"));
         when(eventRepository.countByDeviceTypeSince(any())).thenReturn(List.of());
         when(eventRepository.countByBrowserSince(any())).thenReturn(List.of());
         when(eventRepository.topPagesSince(any())).thenReturn(List.of());
@@ -141,7 +141,7 @@ class AnalyticsServiceTest {
         Map<String, Object> stats = service.getDashboardStats(30);
 
         assertThat(stats).containsEntry("totalPageViews", 1200L);
-        assertThat(stats).containsEntry("uniqueVisitors", 350L);
+        assertThat(stats).containsEntry("uniqueVisitors", List.of("ip1", "ip2", "ip3"));
         assertThat(stats).containsEntry("periodDays", 30);
         assertThat(stats).containsKeys("deviceBreakdown", "browserBreakdown", "topPages");
     }
