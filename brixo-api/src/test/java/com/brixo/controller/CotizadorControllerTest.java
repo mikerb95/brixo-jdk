@@ -28,7 +28,7 @@ class CotizadorControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockitoBean
+    @MockBean
     private CotizadorService cotizadorService;
 
     // ═══════════════════════════════════════════

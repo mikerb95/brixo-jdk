@@ -26,9 +26,9 @@ class ServiciosControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockitoBean
+    @MockBean
     private ServicioRepository servicioRepo;
-    @MockitoBean
+    @MockBean
     private CategoriaRepository categoriaRepo;
 
     private Categoria buildCategoria(Long id, String nombre) {
